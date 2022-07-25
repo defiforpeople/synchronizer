@@ -6,7 +6,7 @@ export const router = (ctx: Context) => {
   const router = Router();
 
   router.get("/transactions/:wallet/deposits/:contract_id", getDepositsHandler(ctx));
-  router.get("/transactions/:wallet/withdraw/:contract_id", getWithdrawsHandler(ctx));
+  router.get("/transactions/:wallet/withdraws/:contract_id", getWithdrawsHandler(ctx));
 
   return router;
 };

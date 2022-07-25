@@ -3,10 +3,10 @@ import { Context, DepositsResponse, WithdrawResponse } from "../type";
 
 export const getDepositsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const { wallet, contractId } = req.body;
+    const { wallet, contractId } = req.params;
 
     try {
-      const deposits = await ctx.db.depositsByContractId(wallet, contractId);
+      const deposits = await ctx.db.depositsByWalletContractAddress(wallet, contractId);
 
       const response: DepositsResponse = {
         data: {
@@ -27,10 +27,10 @@ export const getDepositsHandler = (ctx: Context) => {
 
 export const getWithdrawsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const { wallet, contractId } = req.body;
+    const { wallet, contractId } = req.params;
 
     try {
-      const withdraws = await ctx.db.withdrawsByContractId(wallet, contractId);
+      const withdraws = await ctx.db.withdrawsByWalletContractAddress(wallet, contractId);
 
       const response: WithdrawResponse = {
         data: {
