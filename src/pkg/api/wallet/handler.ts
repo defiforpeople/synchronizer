@@ -3,7 +3,7 @@ import { Context, ListWalletsResponse, LoginWalletResponse } from "../type";
 
 export const walletsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const {} = req.body;
+    const {} = req.params;
 
     try {
       const wallets = await ctx.db.listWallets();
@@ -27,7 +27,7 @@ export const walletsHandler = (ctx: Context) => {
 
 export const loginHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const { wallet: walletAddr } = req.body;
+    const { wallet: walletAddr } = req.params;
 
     try {
       const wallet = await ctx.db.login(walletAddr);
