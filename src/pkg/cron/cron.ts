@@ -55,9 +55,17 @@ export class Cron {
       type === TransactionType.Deposit ? this.contract.filters.Deposit() : this.contract.filters.Withdraw();
     const fromBlockNumber = latestBlock > 0 ? latestBlock : undefined;
     const events = await this.contract.queryFilter(filterFrom, fromBlockNumber);
-    const sortedTransactions = events.sort((a, b) => a.blockNumber - b.blockNumber);
+    if (!events.length) {
+      return [];
+    }
 
-    // find fetched events hashes inside the database
+    console.log("EVENTS");
+    console.log("EVENTS");
+    console.log("EVENTS");
+    console.log(events);
+
+    // sort and find fetched events hashes inside the database
+    const sortedTransactions = events.sort((a, b) => a.blockNumber - b.blockNumber);
     const hashes = sortedTransactions.map((e) => e.transactionHash);
     const dbHashes = (await this.db.listTransactionsByHashes(hashes)).map((t) => t.hash);
 
@@ -76,17 +84,24 @@ export class Cron {
       // get and insert new deposits from contract events into the db and then replace block number
       try {
         const deposits = await this.getNewTransactions(TransactionType.Deposit, this.latestDepositBlock);
-        await this.db.insertTransactions(deposits);
-        this.latestDepositBlock = deposits[deposits.length - 1].block;
+        if (deposits.length > 0) {
+          await this.db.insertTransactions(deposits);
+          this.latestDepositBlock = deposits[deposits.length - 1].block;
+        }
       } catch (err: any) {
         console.warn(`could't get or insert deposit transaction, err=${err.message}`);
       }
 
       // get and insert new withdraws from contracts events into the db and then replace block number
       try {
+        console.log("C", this.latestWithdrawBlock);
         const withdraws = await this.getNewTransactions(TransactionType.Withdraw, this.latestWithdrawBlock);
-        await this.db.insertTransactions(withdraws);
-        this.latestWithdrawBlock = withdraws[withdraws.length - 1].block;
+        console.log("D", withdraws.length);
+        if (withdraws.length > 0) {
+          console.log("E");
+          await this.db.insertTransactions(withdraws);
+          this.latestWithdrawBlock = withdraws[withdraws.length - 1].block;
+        }
       } catch (err: any) {
         console.warn(`could't get or insert withdraw transaction, err=${err.message}`);
       }

@@ -18,7 +18,7 @@ export const toTransaction = (e: ethers.Event, type: TransactionType): Transacti
     type,
     wallet: userAddr,
     contract: e.address,
-    amount: amount.toNumber(),
+    amount: amount.toString(),
     token: TokenType.MATIC,
   };
 };
