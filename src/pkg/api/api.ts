@@ -20,8 +20,8 @@ export class Server {
   public run(): void {
     const app = express();
 
-    app.use("/api/v1", wallet.router({ db: this.db }));
     app.use("/api/v1", transaction.router({ db: this.db }));
+    app.use("/api/v1", wallet.router({ db: this.db }));
 
     this.server = app.listen(this.port, async () => {
       console.log(`server are listening on port ${this.port}`);
