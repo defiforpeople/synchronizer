@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 export enum TransactionType {
   Deposit = "deposit",
   Withdraw = "withdraw",
@@ -14,9 +16,9 @@ export type Transaction = {
   type: TransactionType;
   wallet: string;
   contract: string;
-  amount: number;
+  amount: string;
   token: TokenType;
-  createdAt?: Date;
+  createdAt?: number;
 };
 
 export type Wallet = {
