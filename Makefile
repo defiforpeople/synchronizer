@@ -1,3 +1,7 @@
+# load .env file
+include .env
+export $(shell sed 's/=.*//' .env)
+
 install: prepare
 	@echo "[install] Installing dependencies..."
 	@npm install
@@ -35,13 +39,20 @@ stop:
 	@docker-compose --env-file .env down || true
 
 deploy:
-	@echo "[deploy] Deploying version $(VERSION)"
+	@echo "[deploy] Deploying version to remote server..."
+
+deploy-internal:
+	@echo "[deploy] Internal deploying..."
+	@make stop
+	@git pull origin $(BRANCH)
+	@make install
+	@make dev
 
 destroy:
 	@echo "[destroy] Destroying..."
 
-test\:contracts:
-	@echo "[test] Running tests..."
-	@NODE_ENV=test npm run test
+destroy-internal:
+	@echo "[destroy] Internal destroying..."
+	@make stop
 
-.PHONY: install typescript clean linter check run dev deploy destroy 
+.PHONY: install typescript clean linter check run dev deploy deploy-internal destroy destroy-internal
