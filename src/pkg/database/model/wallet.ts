@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeor
 import { Wallet } from "../../../sychronizer";
 
 @Entity({
-  name: "Wallet",
+  name: "wallet",
 })
 export class WalletModel {
   @PrimaryGeneratedColumn()

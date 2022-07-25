@@ -1,14 +1,17 @@
+import { BigNumber } from "ethers";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 import { Transaction, TransactionType, TokenType } from "../../../sychronizer";
 
 @Entity({
-  name: "SupplyAave",
+  name: "supply_aave",
 })
 export class SupplyAaveModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   hash: string;
 
   @Column()
@@ -26,8 +29,10 @@ export class SupplyAaveModel {
   @Column({ name: "contract" })
   contract: string;
 
-  @Column()
-  amount: number;
+  @Column({
+    type: "text",
+  })
+  amount: string;
 
   // TODO(ca): check if this column are required
   @Column({
@@ -45,7 +50,7 @@ export class SupplyAaveModel {
     this.type = t.type;
     this.wallet = t.wallet;
     this.contract = t.contract;
-    this.amount = t.amount;
+    this.amount = t.amount.toString();
     this.token = t.token;
   }
 
@@ -59,7 +64,7 @@ export class SupplyAaveModel {
       contract: this.contract,
       amount: this.amount,
       token: this.token,
-      createdAt: this.createdAt,
+      createdAt: this.createdAt.getTime(),
     };
   }
 }

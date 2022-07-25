@@ -43,6 +43,10 @@ export class Database implements IDatabase {
       return transaction;
     });
 
+    console.log("+++++++++");
+    console.log(transactions);
+    console.log("+++++++++");
+
     // insert bulk in database
     const saved = await this.dataSource.manager.insert(model.SupplyAaveModel, transactions);
     if (transactions.length != saved.identifiers.length) {
@@ -59,7 +63,7 @@ export class Database implements IDatabase {
     return parsed;
   }
 
-  public async depositsByContractId(wallet: string, contract: string): Promise<Transaction[]> {
+  public async depositsByWalletContractAddress(wallet: string, contract: string): Promise<Transaction[]> {
     // check if class are correctly initialized
     if (!this.ready) {
       throw new Error(ERROR_MSG_NOT_INITIALIZED);
@@ -80,7 +84,7 @@ export class Database implements IDatabase {
     return transactions;
   }
 
-  public async withdrawsByContractId(wallet: string, contract: string): Promise<Transaction[]> {
+  public async withdrawsByWalletContractAddress(wallet: string, contract: string): Promise<Transaction[]> {
     // check if class are correctly initialized
     if (!this.ready) {
       throw new Error(ERROR_MSG_NOT_INITIALIZED);
