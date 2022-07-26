@@ -31,6 +31,8 @@ export type WithdrawsResponse = Response & {
 
 export type BalacesResponse = Response & {
   data?: {
+    deposits: string;
+    withdraws: string;
     balance: string;
   };
 };

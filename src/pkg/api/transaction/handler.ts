@@ -77,6 +77,8 @@ export const getBalancesHandler = (ctx: Context) => {
 
       const response: BalacesResponse = {
         data: {
+          deposits: sumDeposits.toString(),
+          withdraws: sumWithdraws.toString(),
           balance: diff.toString(),
         },
       };
