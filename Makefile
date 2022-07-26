@@ -44,6 +44,7 @@ deploy:
 deploy-internal:
 	@echo "[deploy] Internal deploying..."
 	@make stop
+	@git checkout $(BRANCH)
 	@git pull origin $(BRANCH)
 	@make install
 	@make dev
@@ -54,5 +55,9 @@ destroy:
 destroy-internal:
 	@echo "[destroy] Internal destroying..."
 	@make stop
+
+remote:
+	@echo "[remote] Connecting to machine via SSH..."
+	@ssh -i "dfp.pem" $(SSH_MACHINE)
 
 .PHONY: install typescript clean linter check run dev deploy deploy-internal destroy destroy-internal
