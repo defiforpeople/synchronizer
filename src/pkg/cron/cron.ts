@@ -59,10 +59,7 @@ export class Cron {
       return [];
     }
 
-    console.log("EVENTS");
-    console.log("EVENTS");
-    console.log("EVENTS");
-    console.log(events);
+    // TODO(ca): research how get datetime using "block_number"
 
     // sort and find fetched events hashes inside the database
     const sortedTransactions = events.sort((a, b) => a.blockNumber - b.blockNumber);
@@ -71,7 +68,10 @@ export class Cron {
 
     // filter, parse and prepare transactions to bulk insert in database
     const filtered = sortedTransactions.filter((t) => !dbHashes.includes(t.transactionHash));
-    const parsed = filtered.map((e) => toTransaction(e, TransactionType.Deposit));
+    if (filtered.length === 0) {
+      return [];
+    }
+    const parsed = filtered.map((e) => toTransaction(e, type));
 
     return parsed;
   }
@@ -85,6 +85,7 @@ export class Cron {
       try {
         const deposits = await this.getNewTransactions(TransactionType.Deposit, this.latestDepositBlock);
         if (deposits.length > 0) {
+          console.log("inserting depostir in db", deposits);
           await this.db.insertTransactions(deposits);
           this.latestDepositBlock = deposits[deposits.length - 1].block;
         }
@@ -94,11 +95,9 @@ export class Cron {
 
       // get and insert new withdraws from contracts events into the db and then replace block number
       try {
-        console.log("C", this.latestWithdrawBlock);
         const withdraws = await this.getNewTransactions(TransactionType.Withdraw, this.latestWithdrawBlock);
-        console.log("D", withdraws.length);
         if (withdraws.length > 0) {
-          console.log("E");
+          console.log("inserting withdraw in db", withdraws);
           await this.db.insertTransactions(withdraws);
           this.latestWithdrawBlock = withdraws[withdraws.length - 1].block;
         }
