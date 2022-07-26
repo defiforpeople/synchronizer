@@ -15,11 +15,23 @@ export type DepositsResponse = Response & {
   data?: {
     deposits: Transaction[];
   };
+  meta?: {
+    count: number;
+  };
 };
 
-export type WithdrawResponse = Response & {
+export type WithdrawsResponse = Response & {
   data?: {
     withdraws: Transaction[];
+  };
+  meta?: {
+    count: number;
+  };
+};
+
+export type BalacesResponse = Response & {
+  data?: {
+    balance: string;
   };
 };
 
