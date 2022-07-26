@@ -9,7 +9,7 @@
 			"name": "Transactions",
 			"item": [
 				{
-					"name": "Get deposits by wallet and contract address",
+					"name": "Get deposits",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -31,7 +31,7 @@
 					"response": []
 				},
 				{
-					"name": "Get withdraws by wallet and contract address",
+					"name": "Get withdraws",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -46,6 +46,28 @@
 								"transactions",
 								"{{wallet_addr}}",
 								"withdraws",
+								"{{contract_addr}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get balances",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/balances/{{contract_addr}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"{{wallet_addr}}",
+								"balances",
 								"{{contract_addr}}"
 							]
 						}
