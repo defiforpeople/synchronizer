@@ -2,7 +2,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-install: prepare
+install:
 	@echo "[install] Installing dependencies..."
 	@npm install
 
