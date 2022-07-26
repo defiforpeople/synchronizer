@@ -1,4 +1,3 @@
-// import { environment } from "../../sychronizer";
 import { environment, ERROR_MSG_INVALID_ENV } from "./type";
 
 // load env values
