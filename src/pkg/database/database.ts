@@ -43,10 +43,6 @@ export class Database implements IDatabase {
       return transaction;
     });
 
-    console.log("+++++++++");
-    console.log(transactions);
-    console.log("+++++++++");
-
     // insert bulk in database
     const saved = await this.dataSource.manager.insert(model.SupplyAaveModel, transactions);
     if (transactions.length != saved.identifiers.length) {
