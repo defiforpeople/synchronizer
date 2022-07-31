@@ -1,9 +1,9 @@
 import { ethers, BigNumber } from "ethers";
-import { TokenType, Transaction, TransactionType } from "../../sychronizer";
+import { Network, TokenType, Transaction, TransactionType } from "../../synchronizer";
 
 type TransactionRaw = [userAddr: string, amount: BigNumber];
 
-export const toTransaction = (e: ethers.Event, type: TransactionType): Transaction => {
+export const toTransaction = (network: Network, e: ethers.Event, type: TransactionType): Transaction => {
   // check args from event
   if (!e.args?.length) {
     throw new Error("couldn't create the transaction, err=invalid args length");
@@ -13,6 +13,7 @@ export const toTransaction = (e: ethers.Event, type: TransactionType): Transacti
   const [userAddr, amount] = e.args as TransactionRaw;
 
   return {
+    network,
     hash: e.transactionHash,
     block: e.blockNumber,
     type,
