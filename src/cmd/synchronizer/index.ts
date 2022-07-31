@@ -27,6 +27,9 @@ let api: Server;
 let db: Database;
 let cron: Cron;
 
+// change process title
+process.title = "synchronizer";
+
 async function main() {
   try {
     // get env values
