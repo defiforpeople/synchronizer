@@ -1,14 +1,48 @@
 import { BigNumber } from "ethers";
 import { Request, Response } from "express";
-import { BalacesResponse, Context, DepositsResponse, WithdrawsResponse } from "../type";
+import { utils } from "ethers";
+import { Network } from "../../../synchronizer";
+import { isNetworkValid } from "../../../util";
+import { BalacesResponse, Context, DepositsResponse, WithdrawsResponse } from "./type";
 
 export const getDepositsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const { wallet, contractId } = req.params;
+    // get params
+    const { wallet, contract } = req.params;
+    const { network: networkName } = req.query;
+
+    // check wallet parm
+    if (!wallet || !utils.isAddress(wallet)) {
+      const response: DepositsResponse = {
+        error: `invalid param wallet=${wallet}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check wallet contract
+    if (!contract || !utils.isAddress(contract)) {
+      const response: DepositsResponse = {
+        error: `invalid param contract=${contract}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check network param
+    if (!networkName || !isNetworkValid(networkName as Network)) {
+      const response: DepositsResponse = {
+        error: `invalid param network=${networkName}`,
+      };
+
+      return res.json(response);
+    }
 
     try {
-      const deposits = await ctx.db.depositsByWalletContractAddress(wallet, contractId);
+      // get deposits from database
+      const deposits = await ctx.db.listDeposits(networkName as Network, wallet, contract);
 
+      // prepare and send api response
       const response: DepositsResponse = {
         data: {
           deposits,
@@ -17,7 +51,6 @@ export const getDepositsHandler = (ctx: Context) => {
           count: deposits.length,
         },
       };
-
       res.json(response);
     } catch (err: any) {
       const response: DepositsResponse = {
@@ -31,11 +64,42 @@ export const getDepositsHandler = (ctx: Context) => {
 
 export const getWithdrawsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const { wallet, contractId } = req.params;
+    // get params
+    const { wallet, contract } = req.params;
+    const { network: networkName } = req.query;
+
+    // check wallet parm
+    if (!wallet || !utils.isAddress(wallet)) {
+      const response: DepositsResponse = {
+        error: `invalid param wallet=${wallet}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check wallet contract
+    if (!contract || !utils.isAddress(contract)) {
+      const response: DepositsResponse = {
+        error: `invalid param contract=${contract}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check network param
+    if (!networkName || !isNetworkValid(networkName as Network)) {
+      const response: DepositsResponse = {
+        error: `invalid param network=${networkName}`,
+      };
+
+      return res.json(response);
+    }
 
     try {
-      const withdraws = await ctx.db.withdrawsByWalletContractAddress(wallet, contractId);
+      // get withdraws from database
+      const withdraws = await ctx.db.listWithdraws(networkName as Network, wallet, contract);
 
+      // prepare and send api response
       const response: WithdrawsResponse = {
         data: {
           withdraws,
@@ -44,7 +108,6 @@ export const getWithdrawsHandler = (ctx: Context) => {
           count: withdraws.length,
         },
       };
-
       res.json(response);
     } catch (err: any) {
       const response: WithdrawsResponse = {
@@ -58,31 +121,60 @@ export const getWithdrawsHandler = (ctx: Context) => {
 
 export const getBalancesHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
-    const { wallet, contractId } = req.params;
+    // get params
+    const { wallet, contract } = req.params;
+    const { network: networkName } = req.query;
+
+    // check wallet parm
+    if (!wallet || !utils.isAddress(wallet)) {
+      const response: DepositsResponse = {
+        error: `invalid param wallet=${wallet}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check wallet contract
+    if (!contract || !utils.isAddress(contract)) {
+      const response: DepositsResponse = {
+        error: `invalid param contract=${contract}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check network param
+    if (!networkName || !isNetworkValid(networkName as Network)) {
+      const response: DepositsResponse = {
+        error: `invalid param network=${networkName}`,
+      };
+
+      return res.json(response);
+    }
 
     try {
-      const deposits = await ctx.db.depositsByWalletContractAddress(wallet, contractId);
+      // get deposits from database
+      const deposits = await ctx.db.listDeposits(networkName as Network, wallet, contract);
       const sumDeposits: BigNumber = deposits.reduce(
         (sum, deposit) => sum.add(BigNumber.from(deposit.amount)),
         BigNumber.from(0)
       );
 
-      const withdraws = await ctx.db.withdrawsByWalletContractAddress(wallet, contractId);
+      // get withdraws from database
+      const withdraws = await ctx.db.listWithdraws(networkName as Network, wallet, contract);
       const sumWithdraws: BigNumber = withdraws.reduce(
         (sum, withdraw) => sum.add(BigNumber.from(withdraw.amount)),
         BigNumber.from(0)
       );
 
-      const diff = sumDeposits.sub(sumWithdraws);
-
+      // prepare and send api response
       const response: BalacesResponse = {
         data: {
           deposits: sumDeposits.toString(),
           withdraws: sumWithdraws.toString(),
-          balance: diff.toString(),
+          balance: sumDeposits.sub(sumWithdraws).toString(),
         },
       };
-
       res.json(response);
     } catch (err: any) {
       const response: BalacesResponse = {
