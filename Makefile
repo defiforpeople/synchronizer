@@ -56,6 +56,7 @@ deploy: env destroy
 
 deploy-internal:
 	@echo "[deploy] Internal deploying..."
+	@git fetch origin
 	@git checkout $(BRANCH)
 	@git pull origin $(BRANCH)
 	@make install
