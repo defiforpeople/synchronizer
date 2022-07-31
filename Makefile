@@ -32,7 +32,7 @@ compose:
 
 compose-dev:
 	@echo "[run-dev] Running docker compose for dev..."
-	@docker-compose --env-file .env -f docker-compose.dev.yml up --build
+	@docker-compose --env-file .env -f docker-compose.dev.yml up -d --build
 
 run:
 	@echo "[run] running service..."
@@ -48,6 +48,7 @@ stop:
 
 deploy:
 	@echo "[deploy] Deploying version to remote server..."
+	@ssh -i "dfp.pem" $(SSH_MACHINE) "make deploy-interval BRANCH=$(BRANCH)"
 
 deploy-internal:
 	@echo "[deploy] Internal deploying..."
