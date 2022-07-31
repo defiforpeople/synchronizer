@@ -52,7 +52,7 @@ env:
 
 deploy:
 	@echo "[deploy] Deploying version to remote server..."
-	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make deploy-interval BRANCH=$(BRANCH)"
+	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && nvm use 16 && make deploy-interval BRANCH=$(BRANCH)"
 
 deploy-internal:
 	@echo "[deploy] Internal deploying..."
@@ -60,7 +60,7 @@ deploy-internal:
 	@git checkout $(BRANCH)
 	@git pull origin $(BRANCH)
 	@make install
-	@make dev
+	@make run
 
 destroy:
 	@echo "[destroy] Destroying..."
