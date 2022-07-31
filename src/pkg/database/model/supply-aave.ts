@@ -1,6 +1,5 @@
-import { BigNumber } from "ethers";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
-import { Transaction, TransactionType, TokenType } from "../../../sychronizer";
+import { Transaction, TransactionType, TokenType, Network } from "../../../synchronizer";
 
 @Entity({
   name: "supply_aave",
@@ -8,6 +7,9 @@ import { Transaction, TransactionType, TokenType } from "../../../sychronizer";
 export class SupplyAaveModel {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  network: Network;
 
   @Column({
     unique: true,
@@ -45,6 +47,7 @@ export class SupplyAaveModel {
   createdAt: Date;
 
   public from(t: Transaction): void {
+    this.network = t.network;
     this.hash = t.hash;
     this.block = t.block;
     this.type = t.type;
@@ -57,6 +60,7 @@ export class SupplyAaveModel {
   public to(): Transaction {
     return {
       id: this.id,
+      network: this.network,
       hash: this.hash,
       block: this.block,
       type: this.type,
