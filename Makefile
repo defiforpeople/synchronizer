@@ -46,6 +46,10 @@ stop:
 	@echo "[stop] Stopping docker compose"
 	@docker-compose --env-file .env down || true
 
+env:
+	@echo "[env] Syncing env file"
+	@scp -i "dfp.pem" .env $(SSH_MACHINE):~/$(SERVICE_NAME)
+
 deploy:
 	@echo "[deploy] Deploying version to remote server..."
 	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make deploy-interval BRANCH=$(BRANCH)"
