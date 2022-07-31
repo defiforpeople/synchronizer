@@ -48,7 +48,7 @@ stop:
 
 deploy:
 	@echo "[deploy] Deploying version to remote server..."
-	@ssh -i "dfp.pem" $(SSH_MACHINE) "make deploy-interval BRANCH=$(BRANCH)"
+	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make deploy-interval BRANCH=$(BRANCH)"
 
 deploy-internal:
 	@echo "[deploy] Internal deploying..."
@@ -60,10 +60,11 @@ deploy-internal:
 
 destroy:
 	@echo "[destroy] Destroying..."
+	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make destroy-interval"
 
 destroy-internal:
 	@echo "[destroy] Internal destroying..."
-	@make stop
+	@cd $(SERVICE_NAME) && make stop
 
 remote:
 	@echo "[remote] Connecting to machine via SSH..."
@@ -71,6 +72,6 @@ remote:
 
 docker:
 	@echo "[docker] Building docker image..."
-	@docker buildx build --platform linux/amd64,linux/arm64 --push -t $(CONTAINER_NAME):$(VERSION) .
+	@docker buildx build --platform linux/amd64,linux/arm64 --push -t $(CONTAINER_USERNAME)/$(SERVICE_NAME):$(VERSION) .
 
 .PHONY: install typescript clean linter check compose compose-dev run dev stop deploy deploy-internal destroy destroy-internal remote docker
