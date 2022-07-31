@@ -14,7 +14,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/deposits/{{contract_addr}}",
+							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/deposits/{{contract_addr}}?network={{network}}",
 							"host": [
 								"{{api_url}}"
 							],
@@ -25,6 +25,12 @@
 								"{{wallet_addr}}",
 								"deposits",
 								"{{contract_addr}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
 							]
 						}
 					},
@@ -36,7 +42,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/withdraws/{{contract_addr}}",
+							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/withdraws/{{contract_addr}}?network={{network}}",
 							"host": [
 								"{{api_url}}"
 							],
@@ -47,6 +53,12 @@
 								"{{wallet_addr}}",
 								"withdraws",
 								"{{contract_addr}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
 							]
 						}
 					},
@@ -58,7 +70,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/balances/{{contract_addr}}",
+							"raw": "{{api_url}}/api/v1/transactions/{{wallet_addr}}/balances/{{contract_addr}}?network={{network}}",
 							"host": [
 								"{{api_url}}"
 							],
@@ -69,6 +81,12 @@
 								"{{wallet_addr}}",
 								"balances",
 								"{{contract_addr}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
 							]
 						}
 					},
@@ -85,7 +103,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/api/v1/wallets",
+							"raw": "{{api_url}}/api/v1/wallets?network={{network}}",
 							"host": [
 								"{{api_url}}"
 							],
@@ -93,6 +111,12 @@
 								"api",
 								"v1",
 								"wallets"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
 							]
 						}
 					},
@@ -104,7 +128,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/api/v1/wallets/0xD81ffcED4CD7FD5A20aD70DeDD7a42a9E73bB199/login",
+							"raw": "{{api_url}}/api/v1/wallets/{{wallet_addr}}/login?network={{network}}",
 							"host": [
 								"{{api_url}}"
 							],
@@ -112,8 +136,45 @@
 								"api",
 								"v1",
 								"wallets",
-								"0xD81ffcED4CD7FD5A20aD70DeDD7a42a9E73bB199",
+								"{{wallet_addr}}",
 								"login"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tokens",
+			"item": [
+				{
+					"name": "Get tokens",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/api/v1/tokens/{{wallet_addr}}?network={{network}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tokens",
+								"{{wallet_addr}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
 							]
 						}
 					},
