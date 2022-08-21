@@ -58,11 +58,10 @@ const getEnvNetwork = (networkName: string): NetworkENV => {
   const network = {} as NetworkENV;
 
   switch (networkName) {
-    case "maticmum":
-    case "matic": {
+    case "matic":
+    case "maticmum": {
       network.NAME = networkName;
       network.ALCHEMY_API_KEY = getStrEnv(`${upper}_ALCHEMY_API_KEY`);
-      network.CONTRACT_ADDRESS = getStrEnv(`${upper}_CONTRACT_ADDRESS`);
       break;
     }
   }

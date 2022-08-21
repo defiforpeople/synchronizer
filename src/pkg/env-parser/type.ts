@@ -5,7 +5,6 @@ export const ERROR_MSG_INVALID_ENV = "invalid env env value";
 export type NetworkENV = {
   NAME: Network;
   ALCHEMY_API_KEY: string;
-  CONTRACT_ADDRESS: string;
 };
 
 export type Environment = {
