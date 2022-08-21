@@ -47,16 +47,16 @@ stop:
 	@docker-compose --env-file .env down || true
 
 env:
-	@echo "[env] Syncing env file"
+	@echo "[env] Syncing env file..."
 	@scp -i "dfp.pem" .env $(SSH_MACHINE):~/$(SERVICE_NAME)
 
-deploy:
+deploy: env destroy
 	@echo "[deploy] Deploying version to remote server..."
-	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make deploy-interval BRANCH=$(BRANCH)"
+	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && nvm use 16 && make deploy-internal"
 
 deploy-internal:
 	@echo "[deploy] Internal deploying..."
-	@make stop
+	@git fetch origin
 	@git checkout $(BRANCH)
 	@git pull origin $(BRANCH)
 	@make install
@@ -64,11 +64,11 @@ deploy-internal:
 
 destroy:
 	@echo "[destroy] Destroying..."
-	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make destroy-interval"
+	@ssh -i "dfp.pem" $(SSH_MACHINE) "cd $(SERVICE_NAME) && make destroy-internal"
 
 destroy-internal:
 	@echo "[destroy] Internal destroying..."
-	@cd $(SERVICE_NAME) && make stop
+	@make stop
 
 remote:
 	@echo "[remote] Connecting to machine via SSH..."
