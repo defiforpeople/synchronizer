@@ -1,22 +1,27 @@
 import "reflect-metadata";
 
 // import contract dependencies
-import { MockSupplyAave, MockSupplyAave__factory } from "../../typechain";
+import { MockSupplyAave, MockSupplyAave__factory } from "../../typechain/supply-aave";
+import { SupplyUni, SupplyUni__factory } from "../../typechain/supply-uniswap";
 
 // load env values
 import dotenv from "dotenv";
 dotenv.config();
 
 // import packages
-import { Server } from "../../pkg/api";
-import { Database } from "../../pkg/database";
-import { Cron } from "../../pkg/cron";
+// import * as supplyAave from "../../pkg/strategy-supply-aave";
+import * as strategy from "../../pkg/strategy";
+import * as supplyUniswap from "../../pkg/strategy-supply-uniswap";
+import * as supplyAave from "../../pkg/strategy-supply-aave";
+import * as wallet from "../../pkg/wallet";
+import * as token from "../../pkg/token";
 import { EnvParser } from "../../pkg/env-parser";
 import { Cache } from "../../pkg/cache";
-import { TokenManager } from "../../pkg/token";
+import { Networks } from "../../synchronizer";
 
 import { ethers } from "ethers";
-import { Networks, Network } from "synchronizer";
+import express from "express";
+import { Server } from "http";
 
 // define logger
 import log from "pino";
@@ -24,8 +29,7 @@ const logger = log();
 
 // define global instances
 let api: Server;
-let db: Database;
-let cron: Cron;
+let wm: wallet.IWalletManager;
 
 // change process title
 process.title = "synchronizer";
@@ -35,50 +39,111 @@ async function main() {
     // get env values
     const env = EnvParser();
 
-    // define networks for service
-    const networks: Networks = {} as Networks;
+    // initialize api
+    const app = express();
 
     // run database package
-    db = new Database(env.DATABASE_URL);
-    await db.connect();
+    wm = new wallet.Manager(env.DATABASE_URL);
+    await wm.init();
+    app.use("/api/v1", wallet.Router({ wm }));
 
-    // run api package
-    api = new Server(env.PORT, db, networks);
-    api.run();
+    // intialize cache package
+    const cache = new Cache();
 
-    // initialize provider and contract
-    for (const networkName in env.NETWORK) {
-      const network = env.NETWORK[networkName as Network];
-      if (!network) {
-        throw new Error(`invalid network_name=${networkName}`);
-      }
+    // initialize providers
+    const maticmumProvider = new ethers.providers.AlchemyProvider("maticmum", env.NETWORK["maticmum"].ALCHEMY_API_KEY);
+    const maticProvider = new ethers.providers.AlchemyProvider("matic", env.NETWORK["matic"].ALCHEMY_API_KEY);
 
-      // initialize ethers js
-      const provider = new ethers.providers.AlchemyProvider(networkName, network.ALCHEMY_API_KEY);
+    // define networks for service
+    const networks: Networks = {
+      maticmum: {
+        provider: maticmumProvider,
+        tm: new token.Manager(maticmumProvider.connection.url, maticmumProvider, cache),
+      },
+      matic: {
+        provider: maticProvider,
+        tm: new token.Manager(maticProvider.connection.url, maticProvider, cache),
+      },
+    };
+
+    // initialize supply uniswap storage
+    const supplyUniswapStorage = new supplyUniswap.Storage(env.DATABASE_URL);
+    await supplyUniswapStorage.init();
+    await supplyUniswap.Seed(supplyUniswapStorage);
+
+    // get supply uniswap strategies
+    const supplyUniswapStrategies = await supplyUniswapStorage.listStrategies();
+
+    // iterate supply uniswap strategies
+    const supplyUniswapStrategiesInstances: supplyUniswap.ISupplyUniswapStrategy[] = [];
+    for (let i = 0; i < supplyUniswapStrategies.length; i++) {
+      const strategyInfo = supplyUniswapStrategies[i];
+      const { provider } = networks[strategyInfo.network];
+
+      // intialize contract
+      const contract = new ethers.Contract(strategyInfo.contract, SupplyUni__factory.abi, provider) as SupplyUni;
+
+      // initialize each supply uniswap
+      const strategy = new supplyUniswap.Strategy(strategyInfo, supplyUniswapStorage, env.INTERVAL_SECONDS, contract);
+      await strategy.init();
+
+      supplyUniswapStrategiesInstances.push(strategy);
+    }
+
+    // initialize router for supply uniswap strategies
+    app.use(
+      "/api/v1",
+      supplyUniswap.Router({ strategies: supplyUniswapStrategiesInstances, storage: supplyUniswapStorage })
+    );
+
+    // initialize supply aave storage
+    const supplyAaveStorage = new supplyAave.Storage(env.DATABASE_URL);
+    await supplyAaveStorage.init();
+    await supplyAave.Seed(supplyAaveStorage);
+
+    // get supply aave strategies
+    const supplyAaveStrategies = await supplyAaveStorage.listStrategies();
+
+    // iterate supply aave strategies
+    const supplyAaveStrategiesInstances: supplyAave.ISupplyAaveStrategy[] = [];
+    for (let i = 0; i < supplyAaveStrategies.length; i++) {
+      const strategyInfo = supplyAaveStrategies[i];
+      const { provider } = networks[strategyInfo.network];
 
       // intialize contract
       const contract = new ethers.Contract(
-        network.CONTRACT_ADDRESS,
+        strategyInfo.contract,
         MockSupplyAave__factory.abi,
         provider
       ) as MockSupplyAave;
 
-      // intialize cache package
-      const cache = new Cache();
+      // initialize each supply uniswap
+      const strategy = new supplyAave.Strategy(strategyInfo, supplyAaveStorage, env.INTERVAL_SECONDS, contract);
+      await strategy.init();
 
-      // initialize token manager package
-      const tokenManager = new TokenManager(provider.connection.url, provider, cache);
-
-      // initialize cron package
-      cron = new Cron(networkName as Network, env.INTERVAL_SECONDS, db, contract);
-      cron.run();
-
-      // add cron and token manager to networks definition
-      networks[networkName as Network] = {
-        cron,
-        tm: tokenManager,
-      };
+      supplyAaveStrategiesInstances.push(strategy);
     }
+
+    // initialize router for supply aave strategies
+    app.use("/api/v1", supplyAave.Router({ strategies: supplyAaveStrategiesInstances, storage: supplyAaveStorage }));
+
+    // initialize api tokens router
+    app.use("/api/v1", token.Router({ ns: networks }));
+
+    // intialize api strategies router
+    app.use(
+      "/api/v1",
+      strategy.Router({
+        strategies: {
+          supplyUniswap: supplyUniswapStrategiesInstances,
+          supplyAave: [],
+        },
+      })
+    );
+
+    api = app.listen(env.PORT, async () => {
+      console.log(`Server are listening on port ${env.PORT}`);
+    });
   } catch (err) {
     logger.error(err);
     process.exit(1);
@@ -88,11 +153,10 @@ async function main() {
 // listen process event listeners
 const signCb = async () => {
   try {
-    cron.stop();
-    api.stop();
-    await db.close();
+    api.close();
+    wm.close();
   } catch (err) {
-    logger.error(err);
+    logger.info(err);
   }
 };
 process.on("SIGTERM", signCb);

@@ -4,7 +4,7 @@ dotenv.config();
 
 // load dependencies
 import { ethers } from "ethers";
-import { MockSupplyAave, MockSupplyAave__factory } from "../../typechain";
+import { MockSupplyAave, MockSupplyAave__factory } from "../../typechain/supply-aave";
 
 // check env values
 const { NETWORK } = process.env;
