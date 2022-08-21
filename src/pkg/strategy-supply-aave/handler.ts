@@ -17,7 +17,7 @@ export const getDepositsHandler = (ctx: Context) => {
         error: `invalid param wallet=${wallet}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check wallet contract
@@ -26,7 +26,7 @@ export const getDepositsHandler = (ctx: Context) => {
         error: `invalid param contract=${contract}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check strategy_id param
@@ -35,7 +35,7 @@ export const getDepositsHandler = (ctx: Context) => {
         error: `invalid param strategyId=${strategyId}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check network param
@@ -44,7 +44,7 @@ export const getDepositsHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // get strategy
@@ -60,7 +60,7 @@ export const getDepositsHandler = (ctx: Context) => {
         error: `invalid to get strategy with param network=${networkName}, contract=${contract} and strategyId=${strategyId}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {
@@ -98,7 +98,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
         error: `invalid param wallet=${wallet}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check wallet contract
@@ -107,7 +107,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
         error: `invalid param contract=${contract}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check strategy_id param
@@ -116,7 +116,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
         error: `invalid param strategyId=${strategyId}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check network param
@@ -125,7 +125,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // get strategy
@@ -141,7 +141,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
         error: `invalid to get strategy with param network=${networkName}, contract=${contract} and strategyId=${strategyId}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {
@@ -179,7 +179,7 @@ export const getBalancesHandler = (ctx: Context) => {
         error: `invalid param wallet=${wallet}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check wallet contract
@@ -188,7 +188,7 @@ export const getBalancesHandler = (ctx: Context) => {
         error: `invalid param contract=${contract}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check network param
@@ -197,7 +197,7 @@ export const getBalancesHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // get strategy
@@ -213,7 +213,7 @@ export const getBalancesHandler = (ctx: Context) => {
         error: `invalid to get strategy with param network=${networkName}, contract=${contract} and strategyId=${strategyId}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {

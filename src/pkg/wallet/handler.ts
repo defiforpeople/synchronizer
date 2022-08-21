@@ -16,7 +16,7 @@ export const walletsHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {
@@ -52,7 +52,7 @@ export const loginHandler = (ctx: Context) => {
         error: `invalid param wallet=${walletAddr}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check network param
@@ -61,7 +61,7 @@ export const loginHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {

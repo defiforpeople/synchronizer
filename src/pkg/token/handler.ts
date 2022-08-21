@@ -16,7 +16,7 @@ export const getNativeTokenHandler = (ctx: Context) => {
         error: `invalid param wallet=${wallet}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check network param
@@ -25,7 +25,7 @@ export const getNativeTokenHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {
@@ -62,7 +62,7 @@ export const getTokensHandler = (ctx: Context) => {
         error: `invalid param wallet=${wallet}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     // check network param
@@ -71,7 +71,7 @@ export const getTokensHandler = (ctx: Context) => {
         error: `invalid param network=${networkName}`,
       };
 
-      return res.json(response);
+      return res.status(400).json(response);
     }
 
     try {

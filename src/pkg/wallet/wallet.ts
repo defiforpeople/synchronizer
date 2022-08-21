@@ -40,7 +40,7 @@ export class Manager implements IWalletManager {
     // TODO(ca): should return count for diferent networks
     const wallets = await this.dataSource.manager.find(WalletModel, {
       where: {
-        network,
+        // network,
       },
     });
     const walletsAddrs = [...new Set(wallets.map((w) => w.address))];
