@@ -10,6 +10,7 @@ export type Token = {
 
 export interface ITokenManager {
   getTokens(wallet: string, contracts: string[]): Promise<Token[]>;
+  getNativeToken(wallet: string): Promise<Token>;
 }
 
 export type Response = {
@@ -28,5 +29,11 @@ export type TokensResponse = Response & {
   };
   meta?: {
     count: number;
+  };
+};
+
+export type NativeTokenResponse = Response & {
+  data?: {
+    token: Token;
   };
 };

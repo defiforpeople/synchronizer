@@ -32,6 +32,7 @@ export class SupplyUniswapStrategyModel extends StrategyModel {
   public from(s: SupplyUniswapStrategy): void {
     this.id = s.id!;
     this.name = s.name;
+    this.type = s.type;
     this.network = s.network;
     this.contract = s.contract;
 
@@ -47,6 +48,7 @@ export class SupplyUniswapStrategyModel extends StrategyModel {
     return {
       id: this.id,
       name: this.name,
+      type: this.type,
       network: this.network,
       contract: this.contract,
       data: {

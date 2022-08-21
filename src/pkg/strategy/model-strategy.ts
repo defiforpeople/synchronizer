@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { Network } from "../../synchronizer";
+import { StrategyType } from "./type";
 
 @Entity({
   name: "strategy",
@@ -10,6 +11,9 @@ export class StrategyModel {
 
   @Column({ type: "text" })
   name: string;
+
+  @Column({ type: "text" })
+  type: StrategyType;
 
   @Column({ type: "text" })
   network: Network;

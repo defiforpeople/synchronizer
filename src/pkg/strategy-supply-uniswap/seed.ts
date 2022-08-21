@@ -1,3 +1,4 @@
+import { StrategyType } from "../strategy/type";
 import { ISupplyUniswapStorage } from "./interface";
 import { SupplyUniswapStrategy } from "./type";
 
@@ -6,6 +7,7 @@ export const Seed = async (storage: ISupplyUniswapStorage): Promise<SupplyUniswa
     {
       name: "Supply Uniswap WMATIC/WETH",
       network: "maticmum",
+      type: "supply-uniswap",
       contract: "0x46F3a695Ed91ccDD4CB55Cc86Db18518218e3399",
       data: {
         poolId: "0",
@@ -22,6 +24,7 @@ export const Seed = async (storage: ISupplyUniswapStorage): Promise<SupplyUniswa
     },
     {
       name: "Supply Uniswap WMATIC/WETH",
+      type: "supply-uniswap",
       network: "matic",
       contract: "0xC9Fc250Ab92a802fCc96719eBE17c9c831aDF264",
       data: {

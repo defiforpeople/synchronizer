@@ -140,7 +140,7 @@ async function main() {
       strategy.Router({
         strategies: {
           supplyUniswap: supplyUniswapStrategiesInstances,
-          supplyAave: [],
+          supplyAave: supplyAaveStrategiesInstances,
         },
       })
     );

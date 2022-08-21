@@ -2,7 +2,53 @@ import { Request, Response } from "express";
 import { utils } from "ethers";
 import { Network } from "../../synchronizer";
 import { isNetworkValid } from "../../util";
-import { Context, TokensResponse } from "./type";
+import { Context, TokensResponse, NativeTokenResponse } from "./type";
+
+export const getNativeTokenHandler = (ctx: Context) => {
+  return async (req: Request, res: Response) => {
+    // get params
+    const { wallet } = req.params;
+    const { network: networkName } = req.query;
+
+    // check wallet parm
+    if (!wallet || !utils.isAddress(wallet)) {
+      const response: TokensResponse = {
+        error: `invalid param wallet=${wallet}`,
+      };
+
+      return res.json(response);
+    }
+
+    // check network param
+    if (!networkName || !isNetworkValid(networkName as Network)) {
+      const response: TokensResponse = {
+        error: `invalid param network=${networkName}`,
+      };
+
+      return res.json(response);
+    }
+
+    try {
+      // get tokens from manager
+      // TODO(ca): check the hardcoded contract address
+      const token = await ctx.ns[networkName as Network].tm.getNativeToken(wallet);
+
+      // prepare and send api response
+      const response: NativeTokenResponse = {
+        data: {
+          token,
+        },
+      };
+      res.json(response);
+    } catch (err: any) {
+      const response: NativeTokenResponse = {
+        error: err.message,
+      };
+
+      res.json(response);
+    }
+  };
+};
 
 export const getTokensHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {

@@ -16,7 +16,7 @@ export class Manager implements ITokenManager {
     this.cache = cache;
   }
 
-  public async getTokens(wallet: string, contracts: string[] = []): Promise<Token[]> {
+  public async getNativeToken(wallet: string): Promise<Token> {
     try {
       // get native token balance
       const balance = await this.provider.getBalance(wallet);
@@ -33,8 +33,16 @@ export class Manager implements ITokenManager {
         isNative: true,
       };
 
+      return token;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async getTokens(wallet: string, contracts: string[] = []): Promise<Token[]> {
+    try {
       // define tokens array with native token
-      const tokens: Token[] = [token];
+      const tokens: Token[] = [];
 
       // TODO(ca): get tokens address used by strategy
 
@@ -77,6 +85,7 @@ export class Manager implements ITokenManager {
           case "WETH":
           case "MATIC":
           case "LINK":
+          case "WMATIC":
             symbol = meta.symbol;
             break;
 

@@ -9,6 +9,8 @@ export enum EventType {
   Withdraw = "withdraw",
 }
 
+export type StrategyType = "supply-aave" | "supply-uniswap";
+
 export type Context = {
   strategies: {
     supplyUniswap: ISupplyUniswapStrategy[];
@@ -25,6 +27,7 @@ export type Response = {
 export type Strategy = {
   id?: number;
   name: string;
+  type: StrategyType;
   network: Network;
   contract: string;
   data: unknown;
@@ -43,10 +46,7 @@ export type Event = {
 
 export type StrategiesResponse = Response & {
   data?: {
-    strategies: {
-      supplyUniswap: SupplyUniswapStrategy[];
-      supplyAave: SupplyAaveStrategy[];
-    };
+    strategies: any[];
   };
 };
 
@@ -57,12 +57,6 @@ export type StrategiesByNetworkResponse = Response & {
     };
   };
 };
-
-// export type Strategy = {
-//   id: number;
-//   name: string;
-//   tokens: Token[];
-// };
 
 export interface IStrategyStorage {
   connect(): Promise<void>;

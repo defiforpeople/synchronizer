@@ -1,3 +1,4 @@
+import { StrategyType } from "../strategy/type";
 import { ISupplyAaveStorage } from "./interface";
 import { SupplyAaveStrategy } from "./type";
 
@@ -5,6 +6,7 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
   const strategies: SupplyAaveStrategy[] = [
     {
       name: "Supply Aave WMATIC",
+      type: "supply-aave",
       contract: "0x08f207fd97Aa730fcA8997b4833C71576B48445a",
       network: "maticmum",
       data: {
@@ -16,6 +18,7 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
     },
     {
       name: "Supply Aave WMATIC",
+      type: "supply-aave",
       contract: "0x2e01E2Be86675c68281bb151802e66D7D6EEF79B",
       network: "matic",
       data: {

@@ -1,14 +1,15 @@
-import { Context, StrategiesResponse, StrategiesByNetworkResponse } from "./type";
+import { Context, StrategiesResponse, StrategiesByNetworkResponse, StrategyType } from "./type";
 import { Request, Response } from "express";
 
 export const getStrategies = (ctx: Context) => {
   return async (req: Request, res: Response) => {
+    const strategies: any[] = [];
+    strategies.push(...ctx.strategies.supplyUniswap.map((s) => s.strategy));
+    strategies.push(...ctx.strategies.supplyAave.map((s) => s.strategy));
+
     const response: StrategiesResponse = {
       data: {
-        strategies: {
-          supplyUniswap: ctx.strategies.supplyUniswap.map((su) => su.strategy),
-          supplyAave: [],
-        },
+        strategies,
       },
     };
 
