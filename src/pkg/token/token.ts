@@ -4,9 +4,8 @@ import { Provider } from "@ethersproject/abstract-provider";
 import { ICache } from "../cache/type";
 import { ITokenManager, Token } from "./type";
 import { NativeTokenSymbol, Network, TokenSymbol } from "../../synchronizer";
-import { SimpleConsoleLogger } from "typeorm";
 
-export class TokenManager implements ITokenManager {
+export class Manager implements ITokenManager {
   private client: AlchemyWeb3;
   private cache: ICache;
   private provider: Provider;
@@ -17,7 +16,7 @@ export class TokenManager implements ITokenManager {
     this.cache = cache;
   }
 
-  public async getTokens(wallet: string, contract?: string): Promise<Token[]> {
+  public async getTokens(wallet: string, contracts: string[] = []): Promise<Token[]> {
     try {
       // get native token balance
       const balance = await this.provider.getBalance(wallet);
@@ -34,11 +33,12 @@ export class TokenManager implements ITokenManager {
         isNative: true,
       };
 
-      // iterate tokens returned by alchemy
+      // define tokens array with native token
       const tokens: Token[] = [token];
 
-      // get tokens balances using alchemy api
-      const contracts = contract ? [contract] : undefined;
+      // TODO(ca): get tokens address used by strategy
+
+      // get tokens contras
       const balances = await this.client.alchemy.getTokenBalances(wallet, contracts);
 
       // check if token balances is empty
@@ -46,9 +46,9 @@ export class TokenManager implements ITokenManager {
         return tokens;
       }
 
-      for (const { error, tokenBalance, contractAddress } of balances.tokenBalances) {
+      for (const { error, tokenBalance, contractAddress: contract } of balances.tokenBalances) {
         if (error) {
-          console.warn(`can't get balance for token_addr=${contractAddress} err=${error}`);
+          console.warn(`can't get balance for token_addr=${contract} err=${error}`);
         }
 
         // parse balance to bignumber format
@@ -56,19 +56,20 @@ export class TokenManager implements ITokenManager {
 
         // get token metadata from the cache, if cache not present fetch to alchemy
         let meta: TokenMetadataResponse;
-        if (this.cache.has(contractAddress)) {
-          meta = this.cache.get(contractAddress);
+        if (this.cache.has(contract)) {
+          meta = this.cache.get(contract);
         } else {
-          meta = await this.client.alchemy.getTokenMetadata(contractAddress);
-          this.cache.set(contractAddress, meta);
+          meta = await this.client.alchemy.getTokenMetadata(contract);
+          this.cache.set(contract, meta);
         }
 
         // check if decimal are present, if not stop the iteration
         if (!meta.decimals) {
-          console.warn(`can't get meta decimals for token_addr=${contractAddress}`);
+          console.warn(`can't get meta decimals for token_addr=${contract}`);
           continue;
         }
 
+        // TODO(ca): move to base util file
         // prepare symbol
         let symbol: TokenSymbol;
         switch (meta.symbol) {
@@ -86,9 +87,9 @@ export class TokenManager implements ITokenManager {
         // prepare token
         const token: Token = {
           balance: balance.toString(),
-          decimals: meta.decimals,
-          symbol: symbol,
-          address: contractAddress,
+          decimals: meta.decimals!,
+          symbol,
+          address: contract,
           isNative: false,
         };
 

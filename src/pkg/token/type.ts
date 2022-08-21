@@ -1,4 +1,4 @@
-import { TokenSymbol } from "../../synchronizer";
+import { Networks, TokenSymbol } from "../../synchronizer";
 
 export type Token = {
   balance: string;
@@ -9,5 +9,24 @@ export type Token = {
 };
 
 export interface ITokenManager {
-  getTokens(wallet: string, contract?: string): Promise<Token[]>;
+  getTokens(wallet: string, contracts: string[]): Promise<Token[]>;
 }
+
+export type Response = {
+  data?: unknown;
+  meta?: unknown;
+  error?: string;
+};
+
+export type Context = {
+  ns: Networks;
+};
+
+export type TokensResponse = Response & {
+  data?: {
+    tokens: Token[];
+  };
+  meta?: {
+    count: number;
+  };
+};
