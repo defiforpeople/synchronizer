@@ -22,6 +22,7 @@ import { Networks } from "../../synchronizer";
 import { ethers } from "ethers";
 import express from "express";
 import { Server } from "http";
+import cors from "cors";
 
 // define logger
 import log from "pino";
@@ -41,6 +42,9 @@ async function main() {
 
     // initialize api
     const app = express();
+
+    // define cors
+    app.use(cors({ origin: "*" }));
 
     // run database package
     wm = new wallet.Manager(env.DATABASE_URL);
