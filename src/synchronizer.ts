@@ -1,38 +1,30 @@
+import { Provider } from "@ethersproject/abstract-provider";
 import { ITokenManager } from "./pkg/token/type";
-import { ICron } from "./pkg/cron/type";
 
-export enum TransactionType {
-  Deposit = "deposit",
-  Withdraw = "withdraw",
+export interface ICron {
+  run(): Promise<void>;
+  stop(): void;
 }
 
 export enum TokenType {
+  WETH = "WETH",
+  ETH = "ETH",
   MATIC = "MATIC",
+  WMATIC = "WMATIC",
+  LINK = "LINK",
 }
 
-export type Network = "eth" | "matic" | "maticmum" | "link";
-export type TokenSymbol = "WETH" | "ETH" | "MATIC" | "LINK";
+// export type Network = "eth" | "matic" | "maticmum" | "link";
+export type Network = "maticmum" | "matic";
+export type TokenSymbol = "ETH" | "WETH" | "MATIC" | "WMATIC" | "LINK";
 
 export const NativeTokenSymbol: {
   [key in Network]: TokenSymbol;
 } = {
-  eth: "ETH",
+  // eth: "ETH",
   matic: "MATIC",
   maticmum: "MATIC",
-  link: "LINK",
-};
-
-export type Transaction = {
-  id?: number;
-  network: Network;
-  hash: string;
-  block: number;
-  type: TransactionType;
-  wallet: string;
-  contract: string;
-  amount: string;
-  token: TokenType;
-  createdAt?: number;
+  // link: "LINK",
 };
 
 export type Wallet = {
@@ -44,7 +36,7 @@ export type Wallet = {
 
 export type Networks = {
   [key in Network]: {
-    cron: ICron;
+    provider: Provider;
     tm: ITokenManager;
   };
 };
