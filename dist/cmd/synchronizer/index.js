@@ -53,24 +53,25 @@ let api;
 let wm;
 // change process title
 process.title = "synchronizer";
+const NODE_ENV = process.env.NODE_ENV;
 async function main() {
     try {
         // get env values
         const env = (0, env_parser_1.EnvParser)();
         // initialize api
         const app = (0, express_1.default)();
-        // enable json and cors
-        app.use(express_1.default.json());
-        app.use((0, cors_1.default)({
-            origin: ["http://localhost:3000"],
-        }));
-        // TODO(ca): remove below when not needed to use ngrok tunnel solution
-        // app.use((req, res, next) => {
-        //   res.setHeader("Access-Control-Allow-Origin", ["http://localhost:3000"]);
-        //   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-        //   res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
-        //   next();
-        // });
+        if (NODE_ENV === "testnet") {
+            // define cors
+            app.use((0, cors_1.default)());
+        }
+        else {
+            // TODO(ca): remove below when not needed to use ngrok tunnel solution
+            app.use((_, res, next) => {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                next();
+            });
+        }
         // run database package
         wm = new wallet.Manager(env.DATABASE_URL);
         await wm.init();
