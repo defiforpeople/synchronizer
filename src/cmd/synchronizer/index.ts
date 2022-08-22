@@ -45,14 +45,19 @@ async function main() {
 
     // enable json and cors
     app.use(express.json());
-    app.use(cors());
+    app.use(
+      cors({
+        origin: ["http://localhost:3000"],
+      })
+    );
 
     // TODO(ca): remove below when not needed to use ngrok tunnel solution
-    app.all("/*", (_: Request, res: Response, next: NextFunction) => {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-      next();
-    });
+    // app.use((req, res, next) => {
+    //   res.setHeader("Access-Control-Allow-Origin", ["http://localhost:3000"]);
+    //   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    //   res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
+    //   next();
+    // });
 
     // run database package
     wm = new wallet.Manager(env.DATABASE_URL);
