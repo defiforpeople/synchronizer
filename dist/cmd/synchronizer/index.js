@@ -44,7 +44,7 @@ const env_parser_1 = require("../../pkg/env-parser");
 const cache_1 = require("../../pkg/cache");
 const ethers_1 = require("ethers");
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
+// import cors from "cors";
 // define logger
 const pino_1 = __importDefault(require("pino"));
 const logger = (0, pino_1.default)();
@@ -60,7 +60,13 @@ async function main() {
         // initialize api
         const app = (0, express_1.default)();
         // define cors
-        app.use((0, cors_1.default)({ origin: "*" }));
+        // app.use(cors({ origin: "*" }));
+        // TODO(ca): remove below when not needed to use ngrok tunnel solution
+        app.use((_, res, next) => {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
         // run database package
         wm = new wallet.Manager(env.DATABASE_URL);
         await wm.init();
