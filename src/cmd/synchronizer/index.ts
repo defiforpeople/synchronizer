@@ -17,7 +17,7 @@ import * as wallet from "../../pkg/wallet";
 import * as token from "../../pkg/token";
 import { EnvParser } from "../../pkg/env-parser";
 import { Cache } from "../../pkg/cache";
-import { Networks } from "../../synchronizer";
+import { AddressAndNetwork, Networks } from "../../synchronizer";
 
 import { ethers } from "ethers";
 import express, { Response, Request } from "express";
@@ -70,6 +70,9 @@ async function main() {
       },
     };
 
+    // define contracts addresses array
+    const contracts: AddressAndNetwork[] = [];
+
     // initialize supply uniswap storage
     const supplyUniswapStorage = new supplyUniswap.Storage(env.DATABASE_URL);
     await supplyUniswapStorage.init();
@@ -92,6 +95,10 @@ async function main() {
       await strategy.init();
 
       supplyUniswapStrategiesInstances.push(strategy);
+
+      // get and push strategy addresses
+      const addrs = await strategy.getTokensAddresses();
+      contracts.push(...addrs);
     }
 
     // initialize router for supply uniswap strategies
@@ -126,13 +133,14 @@ async function main() {
       await strategy.init();
 
       supplyAaveStrategiesInstances.push(strategy);
+
+      // get and push strategy addresses
+      const addrs = await strategy.getTokensAddresses();
+      contracts.push(...addrs);
     }
 
     // initialize router for supply aave strategies
     app.use("/api/v1", supplyAave.Router({ strategies: supplyAaveStrategiesInstances, storage: supplyAaveStorage }));
-
-    // initialize api tokens router
-    app.use("/api/v1", token.Router({ ns: networks }));
 
     // intialize api strategies router
     app.use(
@@ -144,6 +152,9 @@ async function main() {
         },
       })
     );
+
+    // initialize api tokens router
+    app.use("/api/v1", token.Router({ ns: networks, contracts }));
 
     api = app.listen(env.PORT, async () => {
       console.log(`Server are listening on port ${env.PORT}`);

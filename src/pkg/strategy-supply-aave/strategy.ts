@@ -1,5 +1,5 @@
 import { EventType } from "../strategy/type";
-import { Network } from "../../synchronizer";
+import { AddressAndNetwork, Network } from "../../synchronizer";
 import { SupplyAaveEvent, SupplyAaveStrategy } from "./type";
 import { Contract } from "ethers";
 import { Cron } from "./cron";
@@ -14,6 +14,15 @@ export class Strategy implements ISupplyAaveStrategy {
     this._strategy = strategy;
     this._storage = storage;
     this._cron = new Cron(strategy, intervalMs, contract, this._storage);
+  }
+
+  public async getTokensAddresses(): Promise<AddressAndNetwork[]> {
+    const strategies = await this._storage.listStrategies(this._strategy.network);
+
+    return strategies.map((s) => ({
+      address: s.data.token.address,
+      network: this._strategy.network,
+    }));
   }
 
   public get strategy(): SupplyAaveStrategy {

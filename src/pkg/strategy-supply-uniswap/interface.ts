@@ -1,3 +1,4 @@
+import { AddressAndNetwork, Network } from "synchronizer";
 import { EventType } from "../strategy/type";
 import { SupplyUniswapEvent, SupplyUniswapStrategy } from "./type";
 
@@ -10,6 +11,7 @@ export interface ISupplyUniswapStrategy {
   listEvents(wallet: string, type: EventType): Promise<SupplyUniswapEvent[]>;
   listEventsByHashes(hashes: string[]): Promise<SupplyUniswapEvent[]>;
   getLastEventByType(type: EventType): Promise<SupplyUniswapEvent>;
+  getTokensAddresses(): Promise<AddressAndNetwork[]>;
 }
 
 export interface ISupplyUniswapStorage {
@@ -20,6 +22,6 @@ export interface ISupplyUniswapStorage {
   listEventsByHashes(strategyId: number, hashes: string[]): Promise<SupplyUniswapEvent[]>;
   getLastEventByType(strategyId: number, type: EventType): Promise<SupplyUniswapEvent>;
   createStrategy(s: SupplyUniswapStrategy): Promise<SupplyUniswapStrategy>;
-  listStrategies(): Promise<SupplyUniswapStrategy[]>;
+  listStrategies(network?: Network): Promise<SupplyUniswapStrategy[]>;
   getStrategy(s: SupplyUniswapStrategy): Promise<SupplyUniswapStrategy | undefined>;
 }

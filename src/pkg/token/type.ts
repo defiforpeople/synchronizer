@@ -1,4 +1,4 @@
-import { Networks, TokenSymbol } from "../../synchronizer";
+import { AddressAndNetwork, Networks, TokenSymbol } from "../../synchronizer";
 
 export type Token = {
   balance: string;
@@ -21,6 +21,7 @@ export type Response = {
 
 export type Context = {
   ns: Networks;
+  contracts: AddressAndNetwork[];
 };
 
 export type TokensResponse = Response & {

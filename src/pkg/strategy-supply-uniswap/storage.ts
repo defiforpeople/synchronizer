@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { SupplyUniswapEventModel } from "./model-event";
 import { ISupplyUniswapStorage } from "./interface";
 import { SupplyUniswapStrategyModel } from "./model-strategy";
+import { Network } from "synchronizer";
 
 export const ERROR_MSG_DB_INITIALIZED = "db are initalized";
 export const ERROR_MSG_DB_NOT_INITIALIZED = "db are not initalized";
@@ -150,14 +151,22 @@ export class Storage implements ISupplyUniswapStorage {
     return saved.to();
   }
 
-  public async listStrategies(): Promise<SupplyUniswapStrategy[]> {
+  public async listStrategies(network?: Network): Promise<SupplyUniswapStrategy[]> {
     // check if class are correctly initialized
     if (!this.ready) {
       throw new Error(ERROR_MSG_DB_NOT_INITIALIZED);
     }
 
     // get and parse events from db
-    const strategies = await this.dataSource.manager.find(SupplyUniswapStrategyModel);
+    const params = network
+      ? {
+          where: {
+            network,
+          },
+        }
+      : undefined;
+
+    const strategies = await this.dataSource.manager.find(SupplyUniswapStrategyModel, params);
     const parsed = strategies.map((s) => s.to());
 
     return parsed;

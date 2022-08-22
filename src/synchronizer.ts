@@ -40,3 +40,8 @@ export type Networks = {
     tm: ITokenManager;
   };
 };
+
+export type AddressAndNetwork = {
+  address: string;
+  network: Network;
+};

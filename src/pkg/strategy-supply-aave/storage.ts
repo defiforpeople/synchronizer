@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { SupplyAaveEventModel } from "./model-event";
 import { SupplyAaveStrategyModel } from "./model-strategy";
 import { ISupplyAaveStorage } from "./interface";
+import { Network } from "synchronizer";
 
 export const ERROR_MSG_DB_INITIALIZED = "db are initalized";
 export const ERROR_MSG_DB_NOT_INITIALIZED = "db are not initalized";
@@ -148,14 +149,23 @@ export class Storage implements ISupplyAaveStorage {
     return saved.to();
   }
 
-  public async listStrategies(): Promise<SupplyAaveStrategy[]> {
+  public async listStrategies(network?: Network): Promise<SupplyAaveStrategy[]> {
     // check if class are correctly initialized
     if (!this.ready) {
       throw new Error(ERROR_MSG_DB_NOT_INITIALIZED);
     }
 
+    // define find options if network param is defined
+    const params = network
+      ? {
+          where: {
+            network,
+          },
+        }
+      : undefined;
+
     // get and parse events from db
-    const strategies = await this.dataSource.manager.find(SupplyAaveStrategyModel);
+    const strategies = await this.dataSource.manager.find(SupplyAaveStrategyModel, params);
     const parsed = strategies.map((s) => s.to());
 
     return parsed;

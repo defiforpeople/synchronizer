@@ -1,4 +1,4 @@
-import { Network } from "../../synchronizer";
+import { AddressAndNetwork, Network } from "../../synchronizer";
 import { EventType } from "../strategy/type";
 import { SupplyUniswapEvent, SupplyUniswapStrategy } from "./type";
 import { ISupplyUniswapStrategy } from "./interface";
@@ -56,5 +56,28 @@ export class Strategy implements ISupplyUniswapStrategy {
 
   public async getLastEventByType(type: EventType): Promise<SupplyUniswapEvent> {
     return this._storage.getLastEventByType(this._strategy.id!, type);
+  }
+
+  public async getTokensAddresses(): Promise<AddressAndNetwork[]> {
+    const strategies = await this._storage.listStrategies(this._strategy.network);
+
+    return strategies.reduce((addrs, s) => {
+      const {
+        token0: { address: token0Address },
+        token1: { address: token1Address },
+      } = s.data;
+
+      return [
+        ...addrs,
+        {
+          address: token0Address,
+          network: this._strategy.network,
+        },
+        {
+          address: token1Address,
+          network: this._strategy.network,
+        },
+      ];
+    }, [] as AddressAndNetwork[]);
   }
 }

@@ -39,12 +39,10 @@ export class Manager implements ITokenManager {
     }
   }
 
-  public async getTokens(wallet: string, contracts: string[] = []): Promise<Token[]> {
+  public async getTokens(wallet: string, contracts: string[]): Promise<Token[]> {
     try {
       // define tokens array with native token
       const tokens: Token[] = [];
-
-      // TODO(ca): get tokens address used by strategy
 
       // get tokens contras
       const balances = await this.client.alchemy.getTokenBalances(wallet, contracts);
