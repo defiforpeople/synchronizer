@@ -1,5 +1,5 @@
 import { EventType } from "../strategy/type";
-import { Network } from "../../synchronizer";
+import { AddressAndNetwork, Network } from "../../synchronizer";
 import { SupplyAaveEvent, SupplyAaveStrategy } from "./type";
 import { Contract } from "ethers";
 import { ISupplyAaveStrategy, ISupplyAaveStorage } from "./interface";
@@ -8,6 +8,7 @@ export declare class Strategy implements ISupplyAaveStrategy {
     private _storage;
     private _cron;
     constructor(strategy: SupplyAaveStrategy, storage: ISupplyAaveStorage, intervalMs: number, contract: Contract);
+    getTokensAddresses(): Promise<AddressAndNetwork[]>;
     get strategy(): SupplyAaveStrategy;
     get network(): Network;
     get contract(): string;

@@ -116,13 +116,21 @@ class Storage {
         const saved = await this.dataSource.manager.save(model_strategy_1.SupplyAaveStrategyModel, strategy);
         return saved.to();
     }
-    async listStrategies() {
+    async listStrategies(network) {
         // check if class are correctly initialized
         if (!this.ready) {
             throw new Error(exports.ERROR_MSG_DB_NOT_INITIALIZED);
         }
+        // define find options if network param is defined
+        const params = network
+            ? {
+                where: {
+                    network,
+                },
+            }
+            : undefined;
         // get and parse events from db
-        const strategies = await this.dataSource.manager.find(model_strategy_1.SupplyAaveStrategyModel);
+        const strategies = await this.dataSource.manager.find(model_strategy_1.SupplyAaveStrategyModel, params);
         const parsed = strategies.map((s) => s.to());
         return parsed;
     }

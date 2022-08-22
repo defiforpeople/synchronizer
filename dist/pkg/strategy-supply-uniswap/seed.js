@@ -17,7 +17,7 @@ const Seed = async (storage) => {
                 },
                 token1: {
                     symbol: "WETH",
-                    address: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0",
+                    address: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                 },
             },
         },

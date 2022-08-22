@@ -7,5 +7,5 @@ export declare class Manager implements ITokenManager {
     private provider;
     constructor(url: string, provider: Provider, cache: ICache);
     getNativeToken(wallet: string): Promise<Token>;
-    getTokens(wallet: string, contracts?: string[]): Promise<Token[]>;
+    getTokens(wallet: string, contracts: string[]): Promise<Token[]>;
 }

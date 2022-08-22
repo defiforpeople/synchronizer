@@ -40,5 +40,22 @@ class Strategy {
     async getLastEventByType(type) {
         return this._storage.getLastEventByType(this._strategy.id, type);
     }
+    async getTokensAddresses() {
+        const strategies = await this._storage.listStrategies(this._strategy.network);
+        return strategies.reduce((addrs, s) => {
+            const { token0: { address: token0Address }, token1: { address: token1Address }, } = s.data;
+            return [
+                ...addrs,
+                {
+                    address: token0Address,
+                    network: this._strategy.network,
+                },
+                {
+                    address: token1Address,
+                    network: this._strategy.network,
+                },
+            ];
+        }, []);
+    }
 }
 exports.Strategy = Strategy;

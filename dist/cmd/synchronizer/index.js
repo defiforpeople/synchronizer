@@ -81,6 +81,8 @@ async function main() {
                 tm: new token.Manager(maticProvider.connection.url, maticProvider, cache),
             },
         };
+        // define contracts addresses array
+        const contracts = [];
         // initialize supply uniswap storage
         const supplyUniswapStorage = new supplyUniswap.Storage(env.DATABASE_URL);
         await supplyUniswapStorage.init();
@@ -98,6 +100,9 @@ async function main() {
             const strategy = new supplyUniswap.Strategy(strategyInfo, supplyUniswapStorage, env.INTERVAL_SECONDS, contract);
             await strategy.init();
             supplyUniswapStrategiesInstances.push(strategy);
+            // get and push strategy addresses
+            const addrs = await strategy.getTokensAddresses();
+            contracts.push(...addrs);
         }
         // initialize router for supply uniswap strategies
         app.use("/api/v1", supplyUniswap.Router({ strategies: supplyUniswapStrategiesInstances, storage: supplyUniswapStorage }));
@@ -118,11 +123,12 @@ async function main() {
             const strategy = new supplyAave.Strategy(strategyInfo, supplyAaveStorage, env.INTERVAL_SECONDS, contract);
             await strategy.init();
             supplyAaveStrategiesInstances.push(strategy);
+            // get and push strategy addresses
+            const addrs = await strategy.getTokensAddresses();
+            contracts.push(...addrs);
         }
         // initialize router for supply aave strategies
         app.use("/api/v1", supplyAave.Router({ strategies: supplyAaveStrategiesInstances, storage: supplyAaveStorage }));
-        // initialize api tokens router
-        app.use("/api/v1", token.Router({ ns: networks }));
         // intialize api strategies router
         app.use("/api/v1", strategy.Router({
             strategies: {
@@ -130,6 +136,8 @@ async function main() {
                 supplyAave: supplyAaveStrategiesInstances,
             },
         }));
+        // initialize api tokens router
+        app.use("/api/v1", token.Router({ ns: networks, contracts }));
         api = app.listen(env.PORT, async () => {
             console.log(`Server are listening on port ${env.PORT}`);
         });

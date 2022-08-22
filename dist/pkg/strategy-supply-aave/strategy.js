@@ -9,6 +9,13 @@ class Strategy {
         this._storage = storage;
         this._cron = new cron_1.Cron(strategy, intervalMs, contract, this._storage);
     }
+    async getTokensAddresses() {
+        const strategies = await this._storage.listStrategies(this._strategy.network);
+        return strategies.map((s) => ({
+            address: s.data.token.address,
+            network: this._strategy.network,
+        }));
+    }
     get strategy() {
         return this._strategy;
     }

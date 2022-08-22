@@ -63,11 +63,10 @@ const getTokensHandler = (ctx) => {
             return res.status(400).json(response);
         }
         try {
+            // filter tokens by networkName
+            const filtered = [...new Set(ctx.contracts.filter((c) => c.network === networkName).map((c) => c.address))];
             // get tokens from manager
-            // TODO(ca): check the hardcoded contract address
-            const tokens = await ctx.ns[networkName].tm.getTokens(wallet, [
-                "0x326C977E6efc84E512bB9C30f76E30c160eD06FB", // LINK
-            ]);
+            const tokens = await ctx.ns[networkName].tm.getTokens(wallet, filtered);
             // prepare and send api response
             const response = {
                 data: {

@@ -30,11 +30,10 @@ class Manager {
             throw err;
         }
     }
-    async getTokens(wallet, contracts = []) {
+    async getTokens(wallet, contracts) {
         try {
             // define tokens array with native token
             const tokens = [];
-            // TODO(ca): get tokens address used by strategy
             // get tokens contras
             const balances = await this.client.alchemy.getTokenBalances(wallet, contracts);
             // check if token balances is empty

@@ -1,4 +1,4 @@
-import { Network } from "../../synchronizer";
+import { AddressAndNetwork, Network } from "../../synchronizer";
 import { EventType } from "../strategy/type";
 import { SupplyUniswapEvent, SupplyUniswapStrategy } from "./type";
 import { ISupplyUniswapStrategy } from "./interface";
@@ -18,4 +18,5 @@ export declare class Strategy implements ISupplyUniswapStrategy {
     listEvents(wallet: string, type: EventType): Promise<SupplyUniswapEvent[]>;
     listEventsByHashes(hashes: string[]): Promise<SupplyUniswapEvent[]>;
     getLastEventByType(type: EventType): Promise<SupplyUniswapEvent>;
+    getTokensAddresses(): Promise<AddressAndNetwork[]>;
 }

@@ -28,3 +28,7 @@ export declare type Networks = {
         tm: ITokenManager;
     };
 };
+export declare type AddressAndNetwork = {
+    address: string;
+    network: Network;
+};

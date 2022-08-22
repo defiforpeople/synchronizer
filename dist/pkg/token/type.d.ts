@@ -1,4 +1,4 @@
-import { Networks, TokenSymbol } from "../../synchronizer";
+import { AddressAndNetwork, Networks, TokenSymbol } from "../../synchronizer";
 export declare type Token = {
     balance: string;
     symbol: TokenSymbol;
@@ -17,6 +17,7 @@ export declare type Response = {
 };
 export declare type Context = {
     ns: Networks;
+    contracts: AddressAndNetwork[];
 };
 export declare type TokensResponse = Response & {
     data?: {

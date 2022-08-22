@@ -1,3 +1,4 @@
+import { AddressAndNetwork, Network } from "../../synchronizer";
 import { EventType } from "../strategy/type";
 import { SupplyAaveEvent, SupplyAaveStrategy } from "./type";
 export interface ISupplyAaveStrategy {
@@ -8,6 +9,7 @@ export interface ISupplyAaveStrategy {
     listEvents(wallet: string, type: EventType): Promise<SupplyAaveEvent[]>;
     listEventsByHashes(hashes: string[]): Promise<SupplyAaveEvent[]>;
     getLastEventByType(type: EventType): Promise<SupplyAaveEvent>;
+    getTokensAddresses(): Promise<AddressAndNetwork[]>;
 }
 export interface ISupplyAaveStorage {
     init(): Promise<void>;
@@ -17,6 +19,6 @@ export interface ISupplyAaveStorage {
     listEventsByHashes(strategyId: number, hashes: string[]): Promise<SupplyAaveEvent[]>;
     getLastEventByType(strategyId: number, type: EventType): Promise<SupplyAaveEvent>;
     createStrategy(s: SupplyAaveStrategy): Promise<SupplyAaveStrategy>;
-    listStrategies(): Promise<SupplyAaveStrategy[]>;
+    listStrategies(network?: Network): Promise<SupplyAaveStrategy[]>;
     getStrategy(s: SupplyAaveStrategy): Promise<SupplyAaveStrategy | undefined>;
 }
