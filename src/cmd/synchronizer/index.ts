@@ -20,9 +20,9 @@ import { Cache } from "../../pkg/cache";
 import { AddressAndNetwork, Networks } from "../../synchronizer";
 
 import { ethers } from "ethers";
-import express, { Response, Request } from "express";
+import express, { Response } from "express";
 import { Server } from "http";
-import cors from "cors";
+// import cors from "cors";
 
 // define logger
 import log from "pino";
@@ -35,8 +35,6 @@ let wm: wallet.IWalletManager;
 // change process title
 process.title = "synchronizer";
 
-const NODE_ENV = process.env.NODE_ENV;
-
 async function main() {
   try {
     // get env values
@@ -45,17 +43,15 @@ async function main() {
     // initialize api
     const app = express();
 
-    if (NODE_ENV === "testnet") {
-      // define cors
-      app.use(cors());
-    } else {
-      // TODO(ca): remove below when not needed to use ngrok tunnel solution
-      app.use((_, res, next) => {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-      });
-    }
+    // define cors
+    // app.use(cors());
+
+    // TODO(ca): remove below when not needed to use ngrok tunnel solution
+    app.use((_, res: Response, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+    });
 
     // run database package
     wm = new wallet.Manager(env.DATABASE_URL);
