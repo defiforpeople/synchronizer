@@ -64,7 +64,8 @@ async function main() {
         // TODO(ca): remove below when not needed to use ngrok tunnel solution
         app.use((_, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Accept, X-Requested-With");
+            res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
             next();
         });
         // run database package
