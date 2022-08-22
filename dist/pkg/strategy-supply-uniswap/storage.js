@@ -122,7 +122,7 @@ class Storage {
         if (!this.ready) {
             throw new Error(exports.ERROR_MSG_DB_NOT_INITIALIZED);
         }
-        // get and parse events from db
+        // define find options if network param is defined
         const params = network
             ? {
                 where: {
@@ -130,6 +130,7 @@ class Storage {
                 },
             }
             : undefined;
+        // get and parse events from db
         const strategies = await this.dataSource.manager.find(model_strategy_1.SupplyUniswapStrategyModel, params);
         const parsed = strategies.map((s) => s.to());
         return parsed;

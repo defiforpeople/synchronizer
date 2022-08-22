@@ -157,7 +157,7 @@ export class Storage implements ISupplyUniswapStorage {
       throw new Error(ERROR_MSG_DB_NOT_INITIALIZED);
     }
 
-    // get and parse events from db
+    // define find options if network param is defined
     const params = network
       ? {
           where: {
@@ -166,6 +166,7 @@ export class Storage implements ISupplyUniswapStorage {
         }
       : undefined;
 
+    // get and parse events from db
     const strategies = await this.dataSource.manager.find(SupplyUniswapStrategyModel, params);
     const parsed = strategies.map((s) => s.to());
 

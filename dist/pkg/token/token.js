@@ -32,6 +32,9 @@ class Manager {
     }
     async getTokens(wallet, contracts) {
         try {
+            console.log("1111");
+            console.log("1111");
+            console.log("1111", contracts);
             // define tokens array with native token
             const tokens = [];
             // get tokens contras

@@ -41,6 +41,9 @@ export class Manager implements ITokenManager {
 
   public async getTokens(wallet: string, contracts: string[]): Promise<Token[]> {
     try {
+      console.log("1111");
+      console.log("1111");
+      console.log("1111", contracts);
       // define tokens array with native token
       const tokens: Token[] = [];
 
