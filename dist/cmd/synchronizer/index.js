@@ -44,7 +44,7 @@ const env_parser_1 = require("../../pkg/env-parser");
 const cache_1 = require("../../pkg/cache");
 const ethers_1 = require("ethers");
 const express_1 = __importDefault(require("express"));
-// import cors from "cors";
+const cors_1 = __importDefault(require("cors"));
 // define logger
 const pino_1 = __importDefault(require("pino"));
 const logger = (0, pino_1.default)();
@@ -59,13 +59,13 @@ async function main() {
         const env = (0, env_parser_1.EnvParser)();
         // initialize api
         const app = (0, express_1.default)();
-        // define cors
-        // app.use(cors({ origin: "*" }));
+        // enable json and cors
+        app.use(express_1.default.json());
+        app.use((0, cors_1.default)());
         // TODO(ca): remove below when not needed to use ngrok tunnel solution
-        app.use((_, res, next) => {
+        app.all("/*", (_, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Accept, X-Requested-With");
-            res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+            res.header("Access-Control-Allow-Headers", "X-Requested-With");
             next();
         });
         // run database package

@@ -20,9 +20,9 @@ import { Cache } from "../../pkg/cache";
 import { AddressAndNetwork, Networks } from "../../synchronizer";
 
 import { ethers } from "ethers";
-import express, { Response, Request } from "express";
+import express, { Response, Request, NextFunction } from "express";
 import { Server } from "http";
-// import cors from "cors";
+import cors from "cors";
 
 // define logger
 import log from "pino";
@@ -43,17 +43,14 @@ async function main() {
     // initialize api
     const app = express();
 
-    // define cors
-    // app.use(cors({ origin: "*" }));
+    // enable json and cors
+    app.use(express.json());
+    app.use(cors());
 
     // TODO(ca): remove below when not needed to use ngrok tunnel solution
-    app.use((_, res, next) => {
+    app.all("/*", (_: Request, res: Response, next: NextFunction) => {
       res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Content-Length, Authorization, Accept, X-Requested-With"
-      );
-      res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+      res.header("Access-Control-Allow-Headers", "X-Requested-With");
       next();
     });
 
