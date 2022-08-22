@@ -58,6 +58,14 @@ export type StrategiesByNetworkResponse = Response & {
   };
 };
 
+export type StrategiesBalancesResponse = Response & {
+  data?: {
+    deposits: string;
+    withdraws: string;
+    balance: string;
+  };
+};
+
 export interface IStrategyStorage {
   connect(): Promise<void>;
   close(): Promise<void>;

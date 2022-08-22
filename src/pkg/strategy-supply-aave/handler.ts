@@ -3,13 +3,13 @@ import { Request, Response } from "express";
 import { utils } from "ethers";
 import { Network } from "../../synchronizer";
 import { isNetworkValid } from "../../util";
-import { BalacesResponse, Context, DepositsResponse, WithdrawsResponse } from "./type";
+import { BalacesResponse, Context, DepositsResponse, SupplyAaveEvent, WithdrawsResponse } from "./type";
 import { EventType } from "../strategy/type";
 
 export const getDepositsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
     // get query params
-    const { wallet, contract, strategyId, network: networkName } = req.query;
+    const { wallet, contract, strategyId, network: networkName, usd } = req.query;
 
     // check wallet parm
     if (!wallet || !utils.isAddress(wallet as string)) {
@@ -65,7 +65,12 @@ export const getDepositsHandler = (ctx: Context) => {
 
     try {
       // get deposits from database
-      const deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      let deposits: SupplyAaveEvent[];
+      if (usd) {
+        deposits = await strategy.listEventsUSD(wallet as string, EventType.Deposit);
+      } else {
+        deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      }
 
       // prepare and send api response
       const response: DepositsResponse = {
@@ -90,7 +95,7 @@ export const getDepositsHandler = (ctx: Context) => {
 export const getWithdrawsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
     // get query params
-    const { wallet, contract, strategyId, network: networkName } = req.query;
+    const { wallet, contract, strategyId, network: networkName, usd } = req.query;
 
     // check wallet parm
     if (!wallet || !utils.isAddress(wallet as string)) {
@@ -146,7 +151,12 @@ export const getWithdrawsHandler = (ctx: Context) => {
 
     try {
       // get withdraws from database
-      const withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
+      let withdraws: SupplyAaveEvent[];
+      if (usd) {
+        withdraws = await strategy.listEventsUSD(wallet as string, EventType.Withdraw);
+      } else {
+        withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
+      }
 
       // prepare and send api response
       const response: WithdrawsResponse = {
@@ -171,7 +181,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
 export const getBalancesHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
     // get query params
-    const { wallet, contract, strategyId, network: networkName } = req.query;
+    const { wallet, contract, strategyId, network: networkName, usd } = req.query;
 
     // check wallet parm
     if (!wallet || !utils.isAddress(wallet as string)) {
@@ -218,27 +228,40 @@ export const getBalancesHandler = (ctx: Context) => {
 
     try {
       // get deposits from database
-      const deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
-      const sumDeposits: BigNumber = deposits.reduce(
-        (sum, deposit) => sum.add(BigNumber.from(deposit.data?.token.amount)),
-        BigNumber.from(0)
-      );
+      let deposits: SupplyAaveEvent[];
+      if (usd) {
+        deposits = await strategy.listEventsUSD(wallet as string, EventType.Deposit);
+      } else {
+        deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      }
+
+      // reduce sum deposits
+      const sumDeposits = deposits.reduce((sum, deposit) => {
+        return sum + Number(deposit.data?.token.amount);
+      }, 0);
 
       // get withdraws from database
-      const withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
-      const sumWithdraws: BigNumber = withdraws.reduce(
-        (sum, withdraw) => sum.add(BigNumber.from(withdraw.data?.token.amount)),
-        BigNumber.from(0)
-      );
+      let withdraws: SupplyAaveEvent[];
+      if (usd) {
+        withdraws = await strategy.listEventsUSD(wallet as string, EventType.Withdraw);
+      } else {
+        withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
+      }
+
+      // reduce sum deposits
+      const sumWithdraws = withdraws.reduce((sum, withdraw) => {
+        return sum + Number(withdraw.data?.token.amount);
+      }, 0);
 
       // prepare and send api response
       const response: BalacesResponse = {
         data: {
           deposits: sumDeposits.toString(),
           withdraws: sumWithdraws.toString(),
-          balance: sumDeposits.sub(sumWithdraws).toString(),
+          balance: (sumDeposits - sumWithdraws).toString(),
         },
       };
+
       res.json(response);
     } catch (err: any) {
       const response: BalacesResponse = {

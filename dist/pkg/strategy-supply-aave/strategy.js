@@ -9,13 +9,7 @@ class Strategy {
         this._strategy = strategy;
         this._storage = storage;
         this._cron = new cron_1.Cron(strategy, intervalMs, contract, this._storage);
-        console.log("PROVIDER");
-        console.log("PROVIDER");
-        console.log("PROVIDER", contract.provider);
-        console.log("DATA FEED");
-        console.log("DATA FEED");
-        console.log("DATA FEED", strategy.data.token.dataFeedAddr);
-        this._tokenDataFeed = new data_feed_1.DataFeed(contract.provider, strategy.data.token.dataFeedAddr);
+        this._tokenDataFeed = new data_feed_1.DataFeed(contract.provider, strategy.data.token.address, strategy.data.token.dataFeedAddr, Number(strategy.data.token.dataFeedFactor));
     }
     async getTokensAddresses() {
         const strategies = await this._storage.listStrategies(this._strategy.network);
@@ -47,12 +41,6 @@ class Strategy {
         return this._storage.insertEvents(tt);
     }
     async listEvents(wallet, type) {
-        console.log("+++++++++");
-        console.log("+++++++++");
-        const price = await this._tokenDataFeed.getPrice();
-        console.log("PRICE", price.toString());
-        console.log("+++++++++");
-        console.log("+++++++++");
         return this._storage.listEvents(this._strategy.id, wallet, type);
     }
     async listEventsByHashes(hashes) {
@@ -60,6 +48,20 @@ class Strategy {
     }
     async getLastEventByType(type) {
         return this._storage.getLastEventByType(this._strategy.id, type);
+    }
+    async getPrice() {
+        const price = await this._tokenDataFeed.getPrice();
+        return price;
+    }
+    async listEventsUSD(wallet, type) {
+        const events = await this._storage.listEvents(this._strategy.id, wallet, type);
+        const price = await this._tokenDataFeed.getPrice();
+        return events.map((event) => {
+            const copy = { ...event };
+            const unit = Number(copy.data.token.amount) / 10 ** 18;
+            copy.data.token.amount = (price * unit).toString();
+            return copy;
+        });
     }
 }
 exports.Strategy = Strategy;

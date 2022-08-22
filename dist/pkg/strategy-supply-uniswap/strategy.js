@@ -3,11 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Strategy = void 0;
 const type_1 = require("../strategy/type");
 const cron_1 = require("./cron");
+const data_feed_1 = require("../data-feed");
 class Strategy {
     constructor(strategy, storage, intervalMs, contract) {
         this._strategy = strategy;
         this._storage = storage;
         this._cron = new cron_1.Cron(strategy, intervalMs, contract, this._storage);
+        this._token0DataFeed = new data_feed_1.DataFeed(contract.provider, strategy.data.token0.address, strategy.data.token0.dataFeedAddr, Number(strategy.data.token0.dataFeedFactor));
+        this._token1DataFeed = new data_feed_1.DataFeed(contract.provider, strategy.data.token1.address, strategy.data.token1.dataFeedAddr, Number(strategy.data.token1.dataFeedFactor));
     }
     get strategy() {
         return this._strategy;
@@ -56,6 +59,19 @@ class Strategy {
                 },
             ];
         }, []);
+    }
+    async listEventsUSD(wallet, type) {
+        const events = await this._storage.listEvents(this._strategy.id, wallet, type);
+        const price0 = await this._token0DataFeed.getPrice();
+        const price1 = await this._token1DataFeed.getPrice();
+        return events.map((event) => {
+            const copy = { ...event };
+            const unitToken0 = Number(copy.data.token0.amount) / 10 ** 18;
+            copy.data.token0.amount = (price0 * unitToken0).toString();
+            const unitToken1 = Number(copy.data.token1.amount) / 10 ** 18;
+            copy.data.token1.amount = (price1 * unitToken1).toString();
+            return copy;
+        });
     }
 }
 exports.Strategy = Strategy;

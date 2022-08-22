@@ -12,6 +12,7 @@ export interface ISupplyUniswapStrategy {
   listEventsByHashes(hashes: string[]): Promise<SupplyUniswapEvent[]>;
   getLastEventByType(type: EventType): Promise<SupplyUniswapEvent>;
   getTokensAddresses(): Promise<AddressAndNetwork[]>;
+  listEventsUSD(wallet: string, type: EventType): Promise<SupplyUniswapEvent[]>;
 }
 
 export interface ISupplyUniswapStorage {

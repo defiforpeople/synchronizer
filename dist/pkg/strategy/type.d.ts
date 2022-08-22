@@ -47,6 +47,13 @@ export declare type StrategiesByNetworkResponse = Response & {
         };
     };
 };
+export declare type StrategiesBalancesResponse = Response & {
+    data?: {
+        deposits: string;
+        withdraws: string;
+        balance: string;
+    };
+};
 export interface IStrategyStorage {
     connect(): Promise<void>;
     close(): Promise<void>;

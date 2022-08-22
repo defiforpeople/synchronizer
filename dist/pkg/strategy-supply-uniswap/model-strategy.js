@@ -21,13 +21,15 @@ let SupplyUniswapStrategyModel = class SupplyUniswapStrategyModel extends model_
         this.network = s.network;
         this.contract = s.contract;
         this.poolId = s.data.poolId;
+        this.poolFee = s.data.poolFee;
         this.token0Symbol = s.data.token0.symbol;
         this.token0Addr = s.data.token0.address;
-        this.token0DataFeedAddr = s.data.token0.address;
+        this.token0DataFeedAddr = s.data.token0.dataFeedAddr;
+        this.token0DataFeedFactor = s.data.token0.dataFeedFactor;
         this.token1Symbol = s.data.token1.symbol;
         this.token1Addr = s.data.token1.address;
         this.token1DataFeedAddr = s.data.token1.dataFeedAddr;
-        this.poolFee = s.data.poolFee;
+        this.token1DataFeedFactor = s.data.token1.dataFeedFactor;
     }
     to() {
         return {
@@ -43,11 +45,13 @@ let SupplyUniswapStrategyModel = class SupplyUniswapStrategyModel extends model_
                     symbol: this.token0Symbol,
                     address: this.token0Addr,
                     dataFeedAddr: this.token0DataFeedAddr,
+                    dataFeedFactor: this.token0DataFeedFactor,
                 },
                 token1: {
                     symbol: this.token1Symbol,
                     address: this.token1Addr,
                     dataFeedAddr: this.token1DataFeedAddr,
+                    dataFeedFactor: this.token1DataFeedFactor,
                 },
             },
         };
@@ -72,6 +76,10 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
+], SupplyUniswapStrategyModel.prototype, "token0DataFeedFactor", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text" }),
+    __metadata("design:type", String)
 ], SupplyUniswapStrategyModel.prototype, "token1Symbol", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
@@ -81,6 +89,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], SupplyUniswapStrategyModel.prototype, "token1DataFeedAddr", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text" }),
+    __metadata("design:type", String)
+], SupplyUniswapStrategyModel.prototype, "token1DataFeedFactor", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)

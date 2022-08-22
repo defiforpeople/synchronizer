@@ -8,6 +8,8 @@ export declare class Strategy implements ISupplyUniswapStrategy {
     private _strategy;
     private _storage;
     private _cron;
+    private _token0DataFeed;
+    private _token1DataFeed;
     constructor(strategy: SupplyUniswapStrategy, storage: ISupplyUniswapStorage, intervalMs: number, contract: Contract);
     get strategy(): SupplyUniswapStrategy;
     get network(): Network;
@@ -19,4 +21,5 @@ export declare class Strategy implements ISupplyUniswapStrategy {
     listEventsByHashes(hashes: string[]): Promise<SupplyUniswapEvent[]>;
     getLastEventByType(type: EventType): Promise<SupplyUniswapEvent>;
     getTokensAddresses(): Promise<AddressAndNetwork[]>;
+    listEventsUSD(wallet: string, type: EventType): Promise<SupplyUniswapEvent[]>;
 }

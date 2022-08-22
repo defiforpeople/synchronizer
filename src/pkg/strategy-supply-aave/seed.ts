@@ -14,7 +14,7 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
           symbol: "WMATIC",
           address: "0xb685400156cF3CBE8725958DeAA61436727A30c3",
           dataFeedAddr: "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada",
-          // MATIC/USD 0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada
+          dataFeedFactor: "100000000",
         },
       },
       // user_wallet: 0x57ac4E23aE911Cb3aEDAfE9ABb8E68a68F7CC463
@@ -29,7 +29,7 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
           symbol: "WMATIC",
           address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
           dataFeedAddr: "0xAB594600376Ec9fD91F8e885dADF0CE036862dE0",
-          // MATIC/USD 0xAB594600376Ec9fD91F8e885dADF0CE036862dE0
+          dataFeedFactor: "100000000",
         },
       },
       // user_wallet: 0xa2e50fbBE2D73cd9E2c6e2c97E8Beac17B22C957

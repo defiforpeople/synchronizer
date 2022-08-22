@@ -10,6 +10,7 @@ export interface ISupplyAaveStrategy {
     listEventsByHashes(hashes: string[]): Promise<SupplyAaveEvent[]>;
     getLastEventByType(type: EventType): Promise<SupplyAaveEvent>;
     getTokensAddresses(): Promise<AddressAndNetwork[]>;
+    listEventsUSD(wallet: string, type: EventType): Promise<SupplyAaveEvent[]>;
 }
 export interface ISupplyAaveStorage {
     init(): Promise<void>;

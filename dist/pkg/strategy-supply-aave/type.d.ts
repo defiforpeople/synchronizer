@@ -12,6 +12,7 @@ export declare type SupplyAaveStrategy = Strategy & {
             symbol: TokenSymbol;
             address: string;
             dataFeedAddr: string;
+            dataFeedFactor: string;
         };
     };
 };

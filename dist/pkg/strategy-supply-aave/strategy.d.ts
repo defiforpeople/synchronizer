@@ -19,4 +19,6 @@ export declare class Strategy implements ISupplyAaveStrategy {
     listEvents(wallet: string, type: EventType): Promise<SupplyAaveEvent[]>;
     listEventsByHashes(hashes: string[]): Promise<SupplyAaveEvent[]>;
     getLastEventByType(type: EventType): Promise<SupplyAaveEvent>;
+    getPrice(): Promise<number>;
+    listEventsUSD(wallet: string, type: EventType): Promise<SupplyAaveEvent[]>;
 }

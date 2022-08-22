@@ -13,11 +13,13 @@ export declare type SupplyUniswapStrategy = Strategy & {
             symbol: TokenSymbol;
             address: string;
             dataFeedAddr: string;
+            dataFeedFactor: string;
         };
         token1: {
             symbol: TokenSymbol;
             address: string;
             dataFeedAddr: string;
+            dataFeedFactor: string;
         };
     };
 };

@@ -3,13 +3,13 @@ import { Request, Response } from "express";
 import { utils } from "ethers";
 import { Network } from "../../synchronizer";
 import { isNetworkValid } from "../../util";
-import { BalacesResponse, Context, DepositsResponse, WithdrawsResponse } from "./type";
+import { BalacesResponse, Context, DepositsResponse, SupplyUniswapEvent, WithdrawsResponse } from "./type";
 import { EventType } from "../strategy/type";
 
 export const getDepositsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
     // get query params
-    const { wallet, contract, strategyId, network: networkName } = req.query;
+    const { wallet, contract, strategyId, network: networkName, usd } = req.query;
 
     // check wallet param
     if (!wallet || !utils.isAddress(wallet as string)) {
@@ -65,7 +65,12 @@ export const getDepositsHandler = (ctx: Context) => {
 
     try {
       // get deposits from database
-      const deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      let deposits: SupplyUniswapEvent[];
+      if (usd) {
+        deposits = await strategy.listEventsUSD(wallet as string, EventType.Deposit);
+      } else {
+        deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      }
 
       // prepare and send api response
       const response: DepositsResponse = {
@@ -91,7 +96,7 @@ export const getDepositsHandler = (ctx: Context) => {
 export const getWithdrawsHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
     // get query params
-    const { wallet, contract, strategyId, network: networkName } = req.query;
+    const { wallet, contract, strategyId, network: networkName, usd } = req.query;
 
     // check wallet parm
     if (!wallet || !utils.isAddress(wallet as string)) {
@@ -147,7 +152,12 @@ export const getWithdrawsHandler = (ctx: Context) => {
 
     try {
       // get withdraws from database
-      const withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw); /// PASAR EL STRATEGY_ID
+      let withdraws: SupplyUniswapEvent[];
+      if (usd) {
+        withdraws = await strategy.listEventsUSD(wallet as string, EventType.Withdraw);
+      } else {
+        withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
+      }
 
       // prepare and send api response
       const response: WithdrawsResponse = {
@@ -173,7 +183,7 @@ export const getWithdrawsHandler = (ctx: Context) => {
 export const getBalancesHandler = (ctx: Context) => {
   return async (req: Request, res: Response) => {
     // get query params
-    const { wallet, contract, strategyId, network: networkName } = req.query;
+    const { wallet, contract, strategyId, network: networkName, usd } = req.query;
 
     // check wallet parm
     if (!wallet || !utils.isAddress(wallet as string)) {
@@ -229,31 +239,45 @@ export const getBalancesHandler = (ctx: Context) => {
 
     try {
       // get deposits from database
-      const deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      let deposits: SupplyUniswapEvent[];
+      if (usd) {
+        deposits = await strategy.listEventsUSD(wallet as string, EventType.Deposit);
+      } else {
+        deposits = await strategy.listEvents(wallet as string, EventType.Deposit);
+      }
+
+      // reduce sum deposit
       const [sumDepositsToken0, sumDepositsToken1] = deposits.reduce(
         (sum, deposit) => {
           const [token0, token1] = sum;
 
-          const amount0 = token0.add(BigNumber.from(deposit.data.token0.amount));
-          const amount1 = token1.add(BigNumber.from(deposit.data.token1.amount));
+          const amount0 = token0 + Number(deposit.data.token0.amount);
+          const amount1 = token1 + Number(deposit.data.token1.amount);
 
           return [amount0, amount1];
         },
-        [BigNumber.from(0), BigNumber.from(0)]
+        [0, 0]
       );
 
       // get withdraws from database
-      const withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
+      let withdraws: SupplyUniswapEvent[];
+      if (usd) {
+        withdraws = await strategy.listEventsUSD(wallet as string, EventType.Withdraw);
+      } else {
+        withdraws = await strategy.listEvents(wallet as string, EventType.Withdraw);
+      }
+
+      // reduce sum withdraws
       const [sumWithdrawsToken0, sumWithdrawsToken1] = withdraws.reduce(
         (sum, withdraw) => {
           const [token0, token1] = sum;
 
-          const amount0 = token0.add(BigNumber.from(withdraw.data.token0.amount));
-          const amount1 = token1.add(BigNumber.from(withdraw.data.token1.amount));
+          const amount0 = token0 + Number(withdraw.data.token0.amount);
+          const amount1 = token1 + Number(withdraw.data.token1.amount);
 
           return [amount0, amount1];
         },
-        [BigNumber.from(0), BigNumber.from(0)]
+        [0, 0]
       );
 
       // prepare and send api response
@@ -262,12 +286,12 @@ export const getBalancesHandler = (ctx: Context) => {
           token0: {
             deposits: sumDepositsToken0.toString(),
             withdraws: sumWithdrawsToken0.toString(),
-            balance: sumDepositsToken0.sub(sumWithdrawsToken0).toString(),
+            balance: (sumDepositsToken0 - sumWithdrawsToken0).toString(),
           },
           token1: {
             deposits: sumDepositsToken1.toString(),
             withdraws: sumWithdrawsToken1.toString(),
-            balance: sumDepositsToken1.sub(sumWithdrawsToken1).toString(),
+            balance: (sumDepositsToken1 - sumWithdrawsToken1).toString(),
           },
         },
       };

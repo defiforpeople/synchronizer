@@ -23,6 +23,7 @@ let SupplyAaveStrategyModel = class SupplyAaveStrategyModel extends model_strate
         this.symbol = s.data.token.symbol;
         this.address = s.data.token.address;
         this.dataFeedAddr = s.data.token.dataFeedAddr;
+        this.dataFeedFactor = s.data.token.dataFeedFactor;
     }
     to() {
         return {
@@ -36,6 +37,7 @@ let SupplyAaveStrategyModel = class SupplyAaveStrategyModel extends model_strate
                     symbol: this.symbol,
                     address: this.address,
                     dataFeedAddr: this.dataFeedAddr,
+                    dataFeedFactor: this.dataFeedFactor,
                 },
             },
         };
@@ -53,6 +55,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], SupplyAaveStrategyModel.prototype, "dataFeedAddr", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text" }),
+    __metadata("design:type", String)
+], SupplyAaveStrategyModel.prototype, "dataFeedFactor", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => model_event_1.SupplyAaveEventModel, (event) => event.strategy),
     __metadata("design:type", Array)
