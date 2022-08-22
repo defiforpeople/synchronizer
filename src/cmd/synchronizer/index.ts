@@ -20,7 +20,7 @@ import { Cache } from "../../pkg/cache";
 import { Networks } from "../../synchronizer";
 
 import { ethers } from "ethers";
-import express from "express";
+import express, { Response, Request } from "express";
 import { Server } from "http";
 import cors from "cors";
 
@@ -45,6 +45,11 @@ async function main() {
 
     // define cors
     app.use(cors({ origin: "*" }));
+
+    // define healthz endpoint
+    app.use("/", (_: Request, res: Response) => {
+      res.json({});
+    });
 
     // run database package
     wm = new wallet.Manager(env.DATABASE_URL);
