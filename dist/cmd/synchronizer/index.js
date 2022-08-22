@@ -61,10 +61,6 @@ async function main() {
         const app = (0, express_1.default)();
         // define cors
         app.use((0, cors_1.default)({ origin: "*" }));
-        // define healthz endpoint
-        app.use("/", (_, res) => {
-            res.json({});
-        });
         // run database package
         wm = new wallet.Manager(env.DATABASE_URL);
         await wm.init();
