@@ -14,6 +14,7 @@ export type SupplyAaveStrategy = Strategy & {
     token: {
       symbol: TokenSymbol;
       address: string;
+      dataFeedAddr: string;
     };
   };
 };

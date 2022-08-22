@@ -4,16 +4,28 @@ import { SupplyAaveEvent, SupplyAaveStrategy } from "./type";
 import { Contract } from "ethers";
 import { Cron } from "./cron";
 import { ISupplyAaveStrategy, ISupplyAaveStorage } from "./interface";
+import { DataFeed } from "../data-feed";
 
 export class Strategy implements ISupplyAaveStrategy {
   private _strategy: SupplyAaveStrategy;
   private _storage: ISupplyAaveStorage;
   private _cron: Cron;
+  private _tokenDataFeed: DataFeed;
 
   constructor(strategy: SupplyAaveStrategy, storage: ISupplyAaveStorage, intervalMs: number, contract: Contract) {
     this._strategy = strategy;
     this._storage = storage;
     this._cron = new Cron(strategy, intervalMs, contract, this._storage);
+
+    console.log("PROVIDER");
+    console.log("PROVIDER");
+    console.log("PROVIDER", contract.provider);
+
+    console.log("DATA FEED");
+    console.log("DATA FEED");
+    console.log("DATA FEED", strategy.data.token.dataFeedAddr);
+
+    this._tokenDataFeed = new DataFeed(contract.provider, strategy.data.token.dataFeedAddr);
   }
 
   public async getTokensAddresses(): Promise<AddressAndNetwork[]> {
@@ -55,6 +67,14 @@ export class Strategy implements ISupplyAaveStrategy {
   }
 
   public async listEvents(wallet: string, type: EventType): Promise<SupplyAaveEvent[]> {
+    console.log("+++++++++");
+    console.log("+++++++++");
+
+    const price = await this._tokenDataFeed.getPrice();
+    console.log("PRICE", price.toString());
+
+    console.log("+++++++++");
+    console.log("+++++++++");
     return this._storage.listEvents(this._strategy.id!, wallet, type);
   }
 

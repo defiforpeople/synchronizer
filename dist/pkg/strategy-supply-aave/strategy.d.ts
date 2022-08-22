@@ -7,6 +7,7 @@ export declare class Strategy implements ISupplyAaveStrategy {
     private _strategy;
     private _storage;
     private _cron;
+    private _tokenDataFeed;
     constructor(strategy: SupplyAaveStrategy, storage: ISupplyAaveStorage, intervalMs: number, contract: Contract);
     getTokensAddresses(): Promise<AddressAndNetwork[]>;
     get strategy(): SupplyAaveStrategy;

@@ -22,6 +22,7 @@ let SupplyAaveStrategyModel = class SupplyAaveStrategyModel extends model_strate
         this.contract = s.contract;
         this.symbol = s.data.token.symbol;
         this.address = s.data.token.address;
+        this.dataFeedAddr = s.data.token.dataFeedAddr;
     }
     to() {
         return {
@@ -34,6 +35,7 @@ let SupplyAaveStrategyModel = class SupplyAaveStrategyModel extends model_strate
                 token: {
                     symbol: this.symbol,
                     address: this.address,
+                    dataFeedAddr: this.dataFeedAddr,
                 },
             },
         };
@@ -47,6 +49,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], SupplyAaveStrategyModel.prototype, "address", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text" }),
+    __metadata("design:type", String)
+], SupplyAaveStrategyModel.prototype, "dataFeedAddr", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => model_event_1.SupplyAaveEventModel, (event) => event.strategy),
     __metadata("design:type", Array)

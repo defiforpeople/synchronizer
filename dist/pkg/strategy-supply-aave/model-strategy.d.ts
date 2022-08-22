@@ -5,6 +5,7 @@ import { SupplyAaveStrategy } from "./type";
 export declare class SupplyAaveStrategyModel extends StrategyModel {
     symbol: TokenSymbol;
     address: string;
+    dataFeedAddr: string;
     events: SupplyAaveEventModel[];
     from(s: SupplyAaveStrategy): void;
     to(): SupplyAaveStrategy;

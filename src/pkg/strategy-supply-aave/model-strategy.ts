@@ -14,6 +14,9 @@ export class SupplyAaveStrategyModel extends StrategyModel {
   @Column({ type: "text" })
   address: string;
 
+  @Column({ type: "text" })
+  dataFeedAddr: string;
+
   @OneToMany(() => SupplyAaveEventModel, (event) => event.strategy)
   events: SupplyAaveEventModel[];
 
@@ -26,6 +29,7 @@ export class SupplyAaveStrategyModel extends StrategyModel {
 
     this.symbol = s.data.token.symbol;
     this.address = s.data.token.address;
+    this.dataFeedAddr = s.data.token.dataFeedAddr;
   }
 
   public to(): SupplyAaveStrategy {
@@ -39,6 +43,7 @@ export class SupplyAaveStrategyModel extends StrategyModel {
         token: {
           symbol: this.symbol,
           address: this.address,
+          dataFeedAddr: this.dataFeedAddr,
         },
       },
     };

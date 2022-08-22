@@ -6,8 +6,10 @@ export declare class SupplyUniswapStrategyModel extends StrategyModel {
     poolId: string;
     token0Symbol: TokenSymbol;
     token0Addr: string;
+    token0DataFeedAddr: string;
     token1Symbol: TokenSymbol;
     token1Addr: string;
+    token1DataFeedAddr: string;
     poolFee: string;
     events: SupplyUniswapEventModel;
     from(s: SupplyUniswapStrategy): void;

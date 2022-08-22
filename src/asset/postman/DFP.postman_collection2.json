@@ -90,7 +90,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/api/v1/supply-aave/balances/?network={{network}}&strategyId={{strategy_id}}&wallet={{supply_aave_wallet_addr}}&contract={{supply_aave_contract_addr}}",
+							"raw": "{{api_url}}/api/v1/supply-aave/balances/?network={{network}}&strategyId={{strategy_id}}&wallet=0x74e5022cac14454581f122e21A0c82d09aC2e81d&contract={{supply_aave_contract_addr}}",
 							"host": [
 								"{{api_url}}"
 							],
@@ -112,7 +112,7 @@
 								},
 								{
 									"key": "wallet",
-									"value": "{{supply_aave_wallet_addr}}"
+									"value": "0x74e5022cac14454581f122e21A0c82d09aC2e81d"
 								},
 								{
 									"key": "contract",
@@ -210,14 +210,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://api.defiforpeople.com:3000/api/v1/supply-uniswap/balances?network={{network}}&strategyId={{strategy_id}}&wallet={{supply_uniswap_wallet_addr}}&contract={{supply_uniswap_contract_addr}}",
-							"protocol": "http",
+							"raw": "{{api_url}}/api/v1/supply-uniswap/balances?network={{network}}&strategyId={{strategy_id}}&wallet={{supply_uniswap_wallet_addr}}&contract={{supply_uniswap_contract_addr}}",
 							"host": [
-								"api",
-								"defiforpeople",
-								"com"
+								"{{api_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -361,6 +357,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get native token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/api/v1/native-token/{{supply_uniswap_wallet_addr}}?network={{network}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"native-token",
+								"{{supply_uniswap_wallet_addr}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "{{network}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -406,6 +428,20 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Healthz",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}",
+					"host": [
+						"{{api_url}}"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

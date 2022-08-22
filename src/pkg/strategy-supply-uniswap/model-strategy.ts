@@ -18,10 +18,16 @@ export class SupplyUniswapStrategyModel extends StrategyModel {
   token0Addr: string;
 
   @Column({ type: "text" })
+  token0DataFeedAddr: string;
+
+  @Column({ type: "text" })
   token1Symbol: TokenSymbol;
 
   @Column({ type: "text" })
   token1Addr: string;
+
+  @Column({ type: "text" })
+  token1DataFeedAddr: string;
 
   @Column({ type: "text" })
   poolFee: string;
@@ -39,8 +45,10 @@ export class SupplyUniswapStrategyModel extends StrategyModel {
     this.poolId = s.data.poolId;
     this.token0Symbol = s.data.token0.symbol;
     this.token0Addr = s.data.token0.address;
+    this.token0DataFeedAddr = s.data.token0.address;
     this.token1Symbol = s.data.token1.symbol;
     this.token1Addr = s.data.token1.address;
+    this.token1DataFeedAddr = s.data.token1.dataFeedAddr;
     this.poolFee = s.data.poolFee;
   }
 
@@ -57,10 +65,12 @@ export class SupplyUniswapStrategyModel extends StrategyModel {
         token0: {
           symbol: this.token0Symbol,
           address: this.token0Addr,
+          dataFeedAddr: this.token0DataFeedAddr,
         },
         token1: {
           symbol: this.token1Symbol,
           address: this.token1Addr,
+          dataFeedAddr: this.token1DataFeedAddr,
         },
       },
     };

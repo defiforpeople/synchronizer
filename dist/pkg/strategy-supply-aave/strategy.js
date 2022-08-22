@@ -3,11 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Strategy = void 0;
 const type_1 = require("../strategy/type");
 const cron_1 = require("./cron");
+const data_feed_1 = require("../data-feed");
 class Strategy {
     constructor(strategy, storage, intervalMs, contract) {
         this._strategy = strategy;
         this._storage = storage;
         this._cron = new cron_1.Cron(strategy, intervalMs, contract, this._storage);
+        console.log("PROVIDER");
+        console.log("PROVIDER");
+        console.log("PROVIDER", contract.provider);
+        console.log("DATA FEED");
+        console.log("DATA FEED");
+        console.log("DATA FEED", strategy.data.token.dataFeedAddr);
+        this._tokenDataFeed = new data_feed_1.DataFeed(contract.provider, strategy.data.token.dataFeedAddr);
     }
     async getTokensAddresses() {
         const strategies = await this._storage.listStrategies(this._strategy.network);
@@ -39,6 +47,12 @@ class Strategy {
         return this._storage.insertEvents(tt);
     }
     async listEvents(wallet, type) {
+        console.log("+++++++++");
+        console.log("+++++++++");
+        const price = await this._tokenDataFeed.getPrice();
+        console.log("PRICE", price.toString());
+        console.log("+++++++++");
+        console.log("+++++++++");
         return this._storage.listEvents(this._strategy.id, wallet, type);
     }
     async listEventsByHashes(hashes) {
