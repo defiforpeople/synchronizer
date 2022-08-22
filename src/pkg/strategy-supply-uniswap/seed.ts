@@ -8,7 +8,7 @@ export const Seed = async (storage: ISupplyUniswapStorage): Promise<SupplyUniswa
       name: "Supply Uniswap WMATIC/WETH",
       network: "maticmum",
       type: "supply-uniswap",
-      contract: "0x46F3a695Ed91ccDD4CB55Cc86Db18518218e3399",
+      contract: "0x7F855BDcb03bCb6e3b66Ecbd028363397174481a",
       data: {
         poolId: "0",
         poolFee: "100",
@@ -21,6 +21,7 @@ export const Seed = async (storage: ISupplyUniswapStorage): Promise<SupplyUniswa
           address: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
         },
       },
+      // user_wallet: 0xa2e50fbBE2D73cd9E2c6e2c97E8Beac17B22C957
     },
     {
       name: "Supply Uniswap WMATIC/WETH",
@@ -39,6 +40,7 @@ export const Seed = async (storage: ISupplyUniswapStorage): Promise<SupplyUniswa
           address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
         },
       },
+      // user_wallet: 0xa2e50fbBE2D73cd9E2c6e2c97E8Beac17B22C957
     },
   ];
 

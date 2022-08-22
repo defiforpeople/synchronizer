@@ -7,7 +7,7 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
     {
       name: "Supply Aave WMATIC",
       type: "supply-aave",
-      contract: "0x08f207fd97Aa730fcA8997b4833C71576B48445a",
+      contract: "0x125dF0B4Ab64Bf6AeD9Fdac6FbaBc4Cf441614B7",
       network: "maticmum",
       data: {
         token: {
@@ -15,11 +15,12 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
           address: "0xb685400156cF3CBE8725958DeAA61436727A30c3",
         },
       },
+      // user_wallet: 0x57ac4E23aE911Cb3aEDAfE9ABb8E68a68F7CC463
     },
     {
       name: "Supply Aave WMATIC",
       type: "supply-aave",
-      contract: "0x2e01E2Be86675c68281bb151802e66D7D6EEF79B",
+      contract: "0xe47fF9b7Ae4888492cEB892cb52ab43fcD08b2aC",
       network: "matic",
       data: {
         token: {
@@ -27,6 +28,7 @@ export const Seed = async (storage: ISupplyAaveStorage) => {
           address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
         },
       },
+      // user_wallet: 0xa2e50fbBE2D73cd9E2c6e2c97E8Beac17B22C957
     },
   ];
 
